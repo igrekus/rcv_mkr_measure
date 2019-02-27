@@ -1,6 +1,8 @@
-import sys
-import serial
+import datetime
+import openpyxl
 import pyvisa
+import serial
+import sys
 
 
 def com_port_init(port: str):
@@ -136,7 +138,72 @@ def VSWR_calc(inp_S: list):
 
 
 def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
-    pass
+
+    first_16_nonzero_elem_indices = [idx for idx, x in enumerate(states) if x != 0]
+
+    num_states = len(first_16_nonzero_elem_indices + 1)
+
+    N = len(freq)
+    ofs = 2
+
+    B = [[None] * (num_states + ofs)] * 4   # empty array to wipe xlsx-file header
+    C = [[None] * (16 * 4 + 2)] * N + 10   # empty array to wipe xlsx-file
+
+    sheet = 1
+    xlRange = 'A1'
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    str_y, str_mth, str_d, str_h, str_m, *rest = datetime.datetime.now().timetuple()
+    str_time = f'{str_h}:{str_m}'
+    str_date = f'{str_d}.{str_mth}.{str_y}'
+
+    title = 'приемный модуль МШУ'
+    ws.cell(row=1, column=1, value=title)
+    ws.cell(row=1, column=3, value=f'date:{str_date} time:{str_time}')
+    ws.cell(row=3, column=1, value='пункт')
+    ws.cell(row=3, column=2, value='частота, МГц')
+
+    i = 3
+    k = 1
+
+    # TODO
+    states = [1, 2, 3, 4, 5, 6]
+    num_states = len(states)
+    ofs = 2
+    # TODO
+
+    for j in range(1, num_states + 1):
+        k = j * 4 - 3 + ofs
+        ws.cell(row=3, column=k + 0, value='SWR_in')
+        ws.cell(row=3, column=k + 1, value='SWR_out')
+        ws.cell(row=3, column=k + 2, value='S21,дБ')
+        ws.cell(row=3, column=k + 3, value='phase,гр.')
+
+        ws.cell(row=4, column=k + 0, value=f'{states[j - 1]} гр.')
+        ws.cell(row=4, column=k + 1, value=f'{states[j - 1]} гр.')
+        ws.cell(row=4, column=k + 2, value=f'{states[j - 1]} гр.')
+        ws.cell(row=4, column=k + 3, value=f'{states[j - 1]} гр.')
+
+    wb.save('out.xlsx')
+
+    for i in range(1, N + 1):
+        ws.cell(row=i, column=2, value=freq[i-1] * 1e-6)
+        ws.cell(row=i, column=1, value=f'{i:03d}')
+
+    pivot_row = 5
+    pivot_col = 1
+
+    for j in range(1, num_states + 1):
+        k = j * 4 - 3 + ofs
+        for i in range(1, N + 1):
+            ws.cell(row=i + pivot_row, column=k + 0 + pivot_col, value=gamma_inp[j][i])
+            ws.cell(row=i + pivot_row, column=k + 1 + pivot_col, value=gamma_outp[j][i])
+            ws.cell(row=i + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
+            ws.cell(row=i + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
+
+    print('saved .xlsx:', file_path)
 
 
 def measure():
