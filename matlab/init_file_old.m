@@ -1,77 +1,80 @@
-function init_file (file_path, freq, states)
-%freq, gamma_inp, gamma_outp, mS21, pS21
-  xls_str_start = 6;%первая строка для записи значений
-  %xls_cln_start = 1;%первый столбец для записи значений
-  indx = 0;%индекс смещения по колонкам
+function init_file(file_path, freq, states)
+    %freq, gamma_inp, gamma_outp, mS21, pS21
+    xls_str_start = 6; %РїРµСЂРІР°В¤ СЃС‚СЂРѕРєР° РґР»В¤ Р·Р°РїРёСЃРё Р·РЅР°С‡РµРЅРёР№
+    %xls_cln_start = 1;%РїРµСЂРІС‹Р№ СЃС‚РѕР»Р±РµС† РґР»В¤ Р·Р°РїРёСЃРё Р·РЅР°С‡РµРЅРёР№
+    indx = 0; %РёРЅРґРµРєСЃ СЃРјРµС‰РµРЅРёВ¤ РїРѕ РєРѕР»РѕРЅРєР°Рј
 
-  N = length(freq);
-  freq = freq*1e-6;
-  data2str = {'N' 'freq,MHz'};
-  ptr_cln1 = get_char(1);
-  ptr_cln2 = get_char(2);
-  strs = strcat(ptr_cln1,num2str(xls_str_start-1),':',ptr_cln2,num2str(xls_str_start-1));
-  xlswrite(file_path,data2str,strs); 
-  
-  data2str = freq;
-  ptr_cln1 = get_char(2);
-  strs = strcat(ptr_cln1,num2str(xls_str_start),':',ptr_cln1,num2str(xls_str_start+N-1));
-  xlswrite(file_path,data2str,strs); 
-  
-  num = 1:1:N;
-  data2str = num(:);
-  ptr_cln1 = get_char(1);
-  strs = strcat(ptr_cln1,num2str(xls_str_start),':',ptr_cln1,num2str(xls_str_start+N-1));
-  xlswrite(file_path,data2str,strs); 
-        
-  num_states  = length(find(states,16,'first'))+1;
-  indx = 3;
-  for i = 1:num_states
-    data2str = states(i);
-    ptr_cln1 = get_char(indx);
-    ptr_cln2 = get_char(indx + 3);
-    strs = strcat(ptr_cln1,num2str(xls_str_start-2),...
-              ':',ptr_cln2,num2str(xls_str_start-2));
-    indx = indx + 4;
-    xlswrite(file_path,data2str,strs);    
-  end;
-  
-  indx = 3;
-  data2str = {'gamma_inp' 'gamma_outp' 'mag(S21),dB' 'arg(S21),grad'};
-  for i = 1:num_states
-    ptr_cln1 = get_char(indx);
-    ptr_cln2 = get_char(indx+3);
-    strs = strcat(ptr_cln1,num2str(xls_str_start-1),...
-        ':',ptr_cln2,num2str(xls_str_start-1));
-    indx = indx + 4;
-    xlswrite(file_path,data2str,strs);    
-  end;
-   
-  indx = 3;
-  data2str = {'maxS21,дБ' 'minS21,дБ' 'max(S21)-min(S21),дБ'};
-  for i = 1:num_states
-    ptr_cln1 = get_char(indx);
-    ptr_cln2 = get_char(indx+2);
-    strs = strcat(ptr_cln1,num2str(xls_str_start-4),...
-        ':',ptr_cln2,num2str(xls_str_start-4));
-    indx = indx + 4;
-    xlswrite(file_path,data2str,strs);    
-  end;
-  
-  data2str = {'delta_Kp, дБ'};
-  ptr_cln1 = get_char(2);
-  strs = strcat(ptr_cln1,num2str(xls_str_start-4),...
-        ':',ptr_cln1,num2str(xls_str_start-4));
-  xlswrite(file_path,data2str,strs);    
-  
-  data2str = {'сдвиг фазы, град.'};
-  ptr_cln1 = get_char(2);
-  strs = strcat(ptr_cln1,num2str(xls_str_start-2),...
-        ':',ptr_cln1,num2str(xls_str_start-2));
-  xlswrite(file_path,data2str,strs);    
-  
-        
-      fprintf('файл инициализирован:\n');
-      fprintf('%s\n',file_path);
-      clear all;
-end
-%EOF
+    N = length(freq);
+    freq = freq * 1e-6;
+    data2str = {'N''freq,MHz'};
+    ptr_cln1 = get_char(1);
+    ptr_cln2 = get_char(2);
+    strs = strcat(ptr_cln1, num2str(xls_str_start - 1), ':', ptr_cln2, num2str(xls_str_start - 1));
+    xlswrite(file_path, data2str, strs);
+
+    data2str = freq;
+    ptr_cln1 = get_char(2);
+    strs = strcat(ptr_cln1, num2str(xls_str_start), ':', ptr_cln1, num2str(xls_str_start + N - 1));
+    xlswrite(file_path, data2str, strs);
+
+    num = 1:1:N;
+    data2str = num(:);
+    ptr_cln1 = get_char(1);
+    strs = strcat(ptr_cln1, num2str(xls_str_start), ':', ptr_cln1, num2str(xls_str_start + N - 1));
+    xlswrite(file_path, data2str, strs);
+
+    num_states = length(find(states, 16, 'first')) + 1;
+    indx = 3;
+
+    for i = 1:num_states
+        data2str = states(i);
+        ptr_cln1 = get_char(indx);
+        ptr_cln2 = get_char(indx + 3);
+        strs = strcat(ptr_cln1, num2str(xls_str_start - 2), ...
+            ':', ptr_cln2, num2str(xls_str_start - 2));
+        indx = indx + 4;
+        xlswrite(file_path, data2str, strs);
+        end;
+
+        indx = 3;
+        data2str = {'gamma_inp''gamma_outp''mag(S21),dB''arg(S21),grad'};
+
+        for i = 1:num_states
+            ptr_cln1 = get_char(indx);
+            ptr_cln2 = get_char(indx + 3);
+            strs = strcat(ptr_cln1, num2str(xls_str_start - 1), ...
+                ':', ptr_cln2, num2str(xls_str_start - 1));
+            indx = indx + 4;
+            xlswrite(file_path, data2str, strs);
+            end;
+
+            indx = 3;
+            data2str = {'maxS21,РґР…''minS21,РґР…''max(S21)-min(S21),РґР…'};
+
+            for i = 1:num_states
+                ptr_cln1 = get_char(indx);
+                ptr_cln2 = get_char(indx + 2);
+                strs = strcat(ptr_cln1, num2str(xls_str_start - 4), ...
+                    ':', ptr_cln2, num2str(xls_str_start - 4));
+                indx = indx + 4;
+                xlswrite(file_path, data2str, strs);
+                end;
+
+                data2str = {'delta_Kp, РґР…'};
+                ptr_cln1 = get_char(2);
+                strs = strcat(ptr_cln1, num2str(xls_str_start - 4), ...
+                    ':', ptr_cln1, num2str(xls_str_start - 4));
+                xlswrite(file_path, data2str, strs);
+
+                data2str = {'СЃРґРІРёРі С„Р°Р·С‹, РіСЂР°Рґ.'};
+                ptr_cln1 = get_char(2);
+                strs = strcat(ptr_cln1, num2str(xls_str_start - 2), ...
+                    ':', ptr_cln1, num2str(xls_str_start - 2));
+                xlswrite(file_path, data2str, strs);
+
+                fprintf('С„Р°Р№Р» РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ:\n');
+                fprintf('%s\n', file_path);
+                clear all;
+            end
+
+            %EOF
