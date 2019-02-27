@@ -31,7 +31,7 @@ function init_file(file_path, freq, states, ...
     i = 3;
     k = 1;
 
-    for j = 1:num_states%столбцы
+    for j = 1:num_states %столбцы
         k = j * 4 - 3 + ofs;
         B{3, k} = 'SWR_in';
         B{3, k + 1} = 'SWR_out';
@@ -41,33 +41,33 @@ function init_file(file_path, freq, states, ...
         B{4, k + 1} = strcat(num2str(states(j)), ' гр.');
         B{4, k + 2} = strcat(num2str(states(j)), ' гр.');
         B{4, k + 3} = strcat(num2str(states(j)), ' гр.');
+    end;
+
+    xlswrite(file_path, B, sheet, xlRange);
+
+    D = cell(N, 4 * num_states + 2);
+
+    for i = 1:N
+        D{i, 2} = freq(i) * 1e-6;
+        D{i, 1} = num2str(i, '%3.0d');
+    end;
+
+    for j = 1:(num_states)
+        k = j * 4 - 3 + ofs;
+
+    for i = 1:N
+        D{i, k} = gamma_inp(j, i);
+        D{i, k + 1} = gamma_outp(j, i);
+        D{i, k + 2} = mS21(j, i);
+        D{i, k + 3} = pS21(j, i);
         end;
+        end;
+        xlRange = 'A5';
+        xlswrite(file_path, D, sheet, xlRange);
 
-        xlswrite(file_path, B, sheet, xlRange);
+        fprintf('данные сохранены в файле:\n');
+        fprintf('%s\n', file_path);
 
-        D = cell(N, 4 * num_states + 2);
-
-        for i = 1:N
-            D{i, 2} = freq(i) * 1e-6;
-            D{i, 1} = num2str(i, '%3.0d');
-            end;
-
-            for j = 1:(num_states)
-                k = j * 4 - 3 + ofs;
-
-                for i = 1:N
-                    D{i, k} = gamma_inp(j, i);
-                    D{i, k + 1} = gamma_outp(j, i);
-                    D{i, k + 2} = mS21(j, i);
-                    D{i, k + 3} = pS21(j, i);
-                    end;
-                    end;
-                    xlRange = 'A5';
-                    xlswrite(file_path, D, sheet, xlRange);
-
-                    fprintf('данные сохранены в файле:\n');
-                    fprintf('%s\n', file_path);
-
-                end
+    end
 
                 %EOF
