@@ -141,7 +141,7 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
 
     first_16_nonzero_elem_indices = [idx for idx, x in enumerate(states) if x != 0]
 
-    num_states = len(first_16_nonzero_elem_indices + 1)
+    num_states = len(first_16_nonzero_elem_indices) + 1
 
     N = len(freq)
     ofs = 2
