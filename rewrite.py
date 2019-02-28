@@ -5,10 +5,7 @@ import serial
 import sys
 
 
-def com_port_init(port: str):
-
-    serial_obj = serial.Serial(port=port, baudrate=115200, parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS,
-                               stopbits=serial.STOPBITS_ONE, timeout=0.2)
+def com_port_init(serial_obj):
     try:
         serial_obj.open()
         serial_obj.write(b'$KE\r\n')
@@ -60,7 +57,12 @@ def receiver_control(bit_str: str, state: int):
     port = 'COM7'
 
     if bit_str == '0':
-        serial_obj = com_port_init(port)
+        serial_obj = com_port_init(serial_obj=serial.Serial(port=port,
+                                                            baudrate=115200,
+                                                            parity=serial.PARITY_NONE,
+                                                            bytesize=serial.EIGHTBITS,
+                                                            stopbits=serial.STOPBITS_ONE,
+                                                            timeout=0.2))
         serial_obj.close()
         return
 
