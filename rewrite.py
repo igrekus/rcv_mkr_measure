@@ -168,12 +168,6 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
     i = 3
     k = 1
 
-    # TODO
-    states = [1, 2, 3, 4, 5, 6]
-    num_states = len(states)
-    ofs = 2
-    # TODO
-
     for j in range(1, num_states + 1):
         k = j * 4 - 3 + ofs
         ws.cell(row=3, column=k + 0, value='SWR_in')
