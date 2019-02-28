@@ -265,7 +265,7 @@ def save_file(file_path, freq, gamma_inp, gamma_outp, mS21, pS21, s21_min, s21_m
 
     data2str = delta_Kp
     ptr_cln = 2
-    ws.cell(row=xls_str_start - 3, column=ptr_cln)
+    ws.cell(row=xls_str_start - 3, column=ptr_cln, value=delta_Kp)
 
     wb.save(file_path)
 
