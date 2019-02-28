@@ -17,16 +17,15 @@ def com_port_init(serial_obj):
     except Exception as ex:
         print(ex)
 
-    print('port open')
-    serial_obj.write(b'$KE,IO,SET,7,0')
-    serial_obj.write(b'$KE,IO,SET,8,0')
-    serial_obj.write(b'$KE,IO,SET,9,0')
-    serial_obj.write(b'$KE,IO,SET,10,0')
-    serial_obj.write(b'$KE,IO,SET,11,0')
-    serial_obj.write(b'$KE,IO,SET,12,0')
-    serial_obj.write(b'$KE,IO,SET,13,0')
-    serial_obj.write(b'$KE,IO,SET,14,0')
-    serial_obj.write(b'$KE,WRA,000000010101010000000000')
+    serial_obj.write(b'$KE,IO,SET,7,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,8,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,9,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,10,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,11,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,12,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,13,0\r\n')
+    serial_obj.write(b'$KE,IO,SET,14,0\r\n')
+    serial_obj.write(b'$KE,WRA,000000010101010000000000\r\n')
 
     return serial_obj
 
