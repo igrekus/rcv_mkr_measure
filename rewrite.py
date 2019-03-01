@@ -133,7 +133,7 @@ def init_pna(preset: int):
 def VSWR_calc(inp_S: list):
     tmp_inp_S = map(lambda x: x/20, inp_S)
     modS = list(map(lambda x: pow(10, x), tmp_inp_S))
-    outp_G = map(lambda x, y: x / y, zip(map(lambda x: 1 + x, modS), map(lambda x: 1 - x, modS)))
+    outp_G = map(lambda z: z[0] / z[1] if z[1] != 0 else 0.000001, zip(map(lambda x: 1 + x, modS), map(lambda x: 1 - x, modS)))
 
     return list(outp_G)
 
