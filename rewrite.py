@@ -76,11 +76,9 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     if state == 1:
         state_pos = 1
         state_neg = 0
-        state_str = 'on'
     elif state == 0:
         state_pos = 0
         state_neg = 1
-        state_str = 'off'
 
     cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}'
     cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}'
