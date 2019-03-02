@@ -87,14 +87,15 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     return ans1, ans2
 
 
-def init_pna(preset: int):
-    print('init pna')
+def init_pna(preset: int, pna=None):
+    if pna is None:
+        try:
+            rm = pyvisa.ResourceManager()
+            pna = rm.open_resource('TCPIP0::192.168.1.61::inst0::INSTR')
 
-    pna = None
-
-    try:
-        rm = pyvisa.ResourceManager()
-        pna = rm.open_resource('TCPIP0::192.168.1.61::inst0::INSTR')
+        except Exception as ex:
+            print('error connecting to pna:', ex)
+            sys.exit(1)
 
         if preset == 1:
             pna.write('SYST:PRES')
