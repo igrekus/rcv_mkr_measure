@@ -61,7 +61,7 @@ def receiver_control(bit_str: str, state: int, serial_obj):
                                                             stopbits=serial.STOPBITS_ONE,
                                                             timeout=0.2))
         serial_obj.close()
-        return
+        return 'init complete'
 
     code_pos, code_neg = 0, 0
     if bit_str == 'bit6':
