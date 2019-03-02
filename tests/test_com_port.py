@@ -52,3 +52,16 @@ def test_com_port_init():
 
     expect(s.is_open).to_equal(False)
 
+
+def test_com_port():
+
+    s = com_port('COM!')
+    s.open()
+    s.write(b'$KE')
+
+    expect(s.is_open).to_equal(True)
+    expect(s.read_all()).to_equal(b'#OK')
+
+    s.close()
+    expect(s.is_open).to_equal(False)
+
