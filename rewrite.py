@@ -78,12 +78,8 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}'
     cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}'
 
-    serial_obj = com_port(serial_obj=serial.Serial(port=port,
-                                                   baudrate=115200,
-                                                   parity=serial.PARITY_NONE,
-                                                   bytesize=serial.EIGHTBITS,
-                                                   stopbits=serial.STOPBITS_ONE,
-                                                   timeout=0.2))
+    serial_obj = com_port(serial_obj=serial_obj)
+    
     ans1 = serial_obj.write(f'{cmd_str_pos}')
     ans2 = serial_obj.write(f'{cmd_str_neg}')
     serial_obj.close()
