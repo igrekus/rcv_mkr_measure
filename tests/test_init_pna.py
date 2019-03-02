@@ -5,8 +5,8 @@ from rewrite import init_pna
 
 def test_init_pna():
 
-    pna, err = init_pna(1)
+    pna, err = init_pna(1, PnaMock())
 
-    expect(pna).to_be(None)
+    expect(isinstance(pna, PnaMock)).to_equal(True)
     expect(err).to_equal(0)
 
