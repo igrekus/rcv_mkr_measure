@@ -23,11 +23,11 @@ def test_receiver_control_with_the_main_branch():
     expect(ans1).to_equal(b'#OK\r\n')
     expect(ans2).to_equal(b'#OK\r\n')
 
-    ans1, ans2 = receiver_control(bit_str='bit4', state=0, serial_obj=s)
+    ans1, ans2 = receiver_control(bit_str='bit4', state=1, serial_obj=s)
     expect(ans1).to_equal(b'#OK\r\n')
     expect(ans2).to_equal(b'#OK\r\n')
 
-    ans1, ans2 = receiver_control(bit_str='bit3', state=0, serial_obj=s)
+    ans1, ans2 = receiver_control(bit_str='bit3', state=1, serial_obj=s)
     expect(ans1).to_equal(b'#OK\r\n')
     expect(ans2).to_equal(b'#OK\r\n')
 
