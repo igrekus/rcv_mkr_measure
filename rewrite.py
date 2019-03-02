@@ -78,8 +78,11 @@ def receiver_control(bit_str: str, state: int, serial_obj):
 
     serial_obj = com_port(serial_obj=serial_obj)
 
-    ans1 = serial_obj.write(f'{cmd_str_pos}')
-    ans2 = serial_obj.write(f'{cmd_str_neg}')
+    serial_obj.write(bytes(cmd_str_pos, encoding='ascii'))
+    ans1 = serial_obj.read_all()
+    serial_obj.write(bytes(cmd_str_neg, encoding='ascii'))
+    ans2 = serial_obj.read_all()
+
     serial_obj.close()
     return ans1, ans2
 
