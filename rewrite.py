@@ -89,8 +89,8 @@ def receiver_control(bit_str: str, state: int, serial_obj):
                                                    bytesize=serial.EIGHTBITS,
                                                    stopbits=serial.STOPBITS_ONE,
                                                    timeout=0.2))
-    print(serial_obj, f'send: {cmd_str_pos}, {state_str}')
-    print(serial_obj, f'send: {cmd_str_neg}, {state_str}')
+    ans1 = serial_obj.write(f'{cmd_str_pos}')
+    ans2 = serial_obj.write(f'{cmd_str_neg}')
     serial_obj.close()
 
 
