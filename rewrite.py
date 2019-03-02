@@ -51,8 +51,6 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     # bit_str {bit3,bit4,bit5,bit6}
     # /state {1, 0}
 
-    port = 'COM7'
-
     if bit_str == '0':
         serial_obj = com_port_init(serial_obj=serial_obj)
         serial_obj.close()
