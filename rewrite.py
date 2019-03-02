@@ -10,7 +10,7 @@ def com_port_init(serial_obj):
         serial_obj.open()
         serial_obj.write(b'$KE\r\n')
         ans = serial_obj.read_all()
-        if '#OK' not in ans:
+        if b'#OK' not in ans:
             print('error opening port')
             sys.exit(1)
 
@@ -30,10 +30,8 @@ def com_port_init(serial_obj):
     return serial_obj
 
 
-def com_port(port: str):
+def com_port(serial_obj):
 
-    serial_obj = serial.Serial(port=port, baudrate=115200, parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS,
-                               stopbits=serial.STOPBITS_ONE, timeout=0.2)
     try:
         serial_obj.open()
         serial_obj.write(b'$KE\r\n')
