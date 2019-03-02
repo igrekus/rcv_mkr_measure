@@ -46,7 +46,7 @@ def com_port(serial_obj):
     return serial_obj
 
 
-def receiver_control(bit_str: str, state: int):
+def receiver_control(bit_str: str, state: int, serial_obj):
     # для переключения выводов оснастки
     # bit_str {bit3,bit4,bit5,bit6}
     # /state {1, 0}
