@@ -54,13 +54,13 @@ def test_com_port_init():
 
 
 def test_com_port():
+    s = com_port(serial_obj=SerialMock())
 
-    s = com_port('COM!')
     s.open()
-    s.write(b'$KE')
+    s.write(b'$KE\r\n')
 
     expect(s.is_open).to_equal(True)
-    expect(s.read_all()).to_equal(b'#OK')
+    expect(s.read_all()).to_equal(b'#OK\r\n')
 
     s.close()
     expect(s.is_open).to_equal(False)
