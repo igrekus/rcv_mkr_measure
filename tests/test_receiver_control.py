@@ -3,7 +3,7 @@ from rewrite import receiver_control
 from serialmock import SerialMock
 
 
-def test_receiver_control_with_bitstring_0():
+def test_receiver_control_with_bitstring_0_branch():
 
     s = SerialMock()
 
