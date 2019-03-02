@@ -38,7 +38,7 @@ def com_port(port: str):
         serial_obj.open()
         serial_obj.write(b'$KE\r\n')
         ans = serial_obj.read_all()
-        if '#OK' not in ans:
+        if b'#OK' not in ans:
             print('error opening port')
             sys.exit(1)
 
