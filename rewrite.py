@@ -92,6 +92,7 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     ans1 = serial_obj.write(f'{cmd_str_pos}')
     ans2 = serial_obj.write(f'{cmd_str_neg}')
     serial_obj.close()
+    return ans1, ans2
 
 
 def init_pna(preset: int):
