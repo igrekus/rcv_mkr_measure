@@ -54,12 +54,7 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     port = 'COM7'
 
     if bit_str == '0':
-        serial_obj = com_port_init(serial_obj=serial.Serial(port=port,
-                                                            baudrate=115200,
-                                                            parity=serial.PARITY_NONE,
-                                                            bytesize=serial.EIGHTBITS,
-                                                            stopbits=serial.STOPBITS_ONE,
-                                                            timeout=0.2))
+        serial_obj = com_port_init(serial_obj=serial_obj)
         serial_obj.close()
         return 'init complete'
 
