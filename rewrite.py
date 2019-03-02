@@ -97,36 +97,33 @@ def init_pna(preset: int, pna=None):
             print('error connecting to pna:', ex)
             sys.exit(1)
 
-        if preset == 1:
-            pna.write('SYST:PRES')
-            pna.query('*OPC?')
-            pna.write('CALC:PAR:DEL:ALL')
+    if preset == 1:
+        pna.write('SYST:PRES')
+        pna.query('*OPC?')
+        pna.write('CALC:PAR:DEL:ALL')
 
-            pna.write('DISP:WIND2 ON')
+        pna.write('DISP:WIND2 ON')
 
-            pna.write('CALC1:PAR:DEF "CH1_S21",S21')
-            pna.write('CALC2:PAR:DEF "CH2_S21",S21')
-            pna.write('CALC1:PAR:DEF "CH1_S11",S11')
-            pna.write('CALC1:PAR:DEF "CH1_S22",S22')
+        pna.write('CALC1:PAR:DEF "CH1_S21",S21')
+        pna.write('CALC2:PAR:DEF "CH2_S21",S21')
+        pna.write('CALC1:PAR:DEF "CH1_S11",S11')
+        pna.write('CALC1:PAR:DEF "CH1_S22",S22')
 
-            pna.write('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
-            pna.write('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
+        pna.write('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
+        pna.write('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
 
-            pna.write('DISP:WIND1:TRAC1:FEED "CH1_S21"')
-            pna.write('DISP:WIND2:TRAC1:FEED "CH2_S21"')
-            pna.write('DISP:WIND1:TRAC2:FEED "CH1_S11"')
-            pna.write('DISP:WIND1:TRAC3:FEED "CH1_S22"')
+        pna.write('DISP:WIND1:TRAC1:FEED "CH1_S21"')
+        pna.write('DISP:WIND2:TRAC1:FEED "CH2_S21"')
+        pna.write('DISP:WIND1:TRAC2:FEED "CH1_S11"')
+        pna.write('DISP:WIND1:TRAC3:FEED "CH1_S22"')
 
-            pna.write('SENS1:SWE:MODE CONT')
-            pna.write('SENS2:SWE:MODE CONT')
+        pna.write('SENS1:SWE:MODE CONT')
+        pna.write('SENS2:SWE:MODE CONT')
 
-            pna.write('CALC1:FORM MLOG')
-            pna.write('CALC2:FORM UPH')
-            pna.write('DISP:WIND1:TRAC1:Y:SCAL:AUTO')
-            pna.write('DISP:WIND2:TRAC1:Y:SCAL:AUTO')
-
-    except Exception as ex:
-        print(ex)
+        pna.write('CALC1:FORM MLOG')
+        pna.write('CALC2:FORM UPH')
+        pna.write('DISP:WIND1:TRAC1:Y:SCAL:AUTO')
+        pna.write('DISP:WIND2:TRAC1:Y:SCAL:AUTO')
 
     return pna, 0
 
