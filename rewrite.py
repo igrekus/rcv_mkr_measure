@@ -73,8 +73,8 @@ def receiver_control(bit_str: str, state: int, serial_obj):
         state_pos = 0
         state_neg = 1
 
-    cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}'
-    cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}'
+    cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}\r\n'
+    cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}\r\n'
 
     serial_obj = com_port(serial_obj=serial_obj)
 
