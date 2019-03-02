@@ -23,6 +23,8 @@ class SerialMock:
             ans = self._success
         elif b'$KE,WRA,' in self._last_write:
             ans = self._success
+        elif b'$KE,WR,' in self._last_write:
+            ans = self._success
         self._last_write = b''
         return ans
 
