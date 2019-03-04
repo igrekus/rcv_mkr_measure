@@ -290,8 +290,6 @@ def measure():
     num_pts = pna.query('SENS1:SWE:POINts?')
     num_ph = len(index)
 
-    tmp = [[0] * num_pts] * num_ph
-
     mag_s11_arr = [[0] * num_pts] * num_ph
     mag_s22_arr = [[0] * num_pts] * num_ph
     mag_s21_arr = [[0] * num_pts] * num_ph
