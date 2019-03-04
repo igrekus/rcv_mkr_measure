@@ -4,10 +4,12 @@ import pyvisa
 import serial
 import sys
 
+from pnamock import PnaMock
 from serialmock import SerialMock
 
 # ser = serial.Serial(port='COM10', baudrate=115200)
 ser = SerialMock()
+pna_mock = PnaMock()
 
 
 def com_port_init(serial_obj):
