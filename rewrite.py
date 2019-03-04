@@ -354,6 +354,8 @@ def measure():
 
     pna.close()
 
+    sys.exit(0)
+
     receiver_control('bit3', 1, serial_obj=ser)
     receiver_control('bit4', 1, serial_obj=ser)
     receiver_control('bit5', 1, serial_obj=ser)
