@@ -322,8 +322,6 @@ def measure():
     pna.write('FORM:DATA REAL,32')
     frq = pna.query('SENS1:X?')
 
-    phs_state = 0
-
     for i in range(1, len(index) + 1):
         j = i - 1
         receiver_control('bit5', bit_state[j][0][0], serial_obj=ser)
