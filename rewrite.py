@@ -11,6 +11,24 @@ from serialmock import SerialMock
 ser = SerialMock()
 pna_mock = PnaMock()
 
+bit_state = {
+    0: ([0, 0, 0, 0], 0.0),
+    1: ([1, 0, 0, 0], 22.5),
+    2: ([0, 1, 0, 0], 45.0),
+    3: ([1, 1, 0, 0], 22.5 + 45.0),
+    4: ([0, 0, 1, 0], 90.0),
+    5: ([1, 0, 1, 0], 22.5 + 90.0),
+    6: ([0, 1, 1, 0], 45.0 + 90.0),
+    7: ([1, 1, 1, 0], 22.5 + 45.0 + 90.0),
+    8: ([0, 0, 0, 1], 180.0),
+    9: ([1, 0, 0, 1], 22.5 + 180.0),
+    10: ([0, 1, 0, 1], 45.0 + 180.0),
+    11: ([1, 1, 0, 1], 22.5 + 45.0 + 180.0),
+    12: ([0, 0, 1, 1], 90.0 + 180.0),
+    13: ([1, 0, 1, 1], 22.5 + 90.0 + 180.0),
+    14: ([0, 1, 1, 1], 45.0 + 90.0 + 180.0),
+    15: ([1, 1, 1, 1], 22.5 + 45.0 + 90.0 + 180.0)
+}
 
 def com_port_init(serial_obj):
     try:
@@ -308,102 +326,11 @@ def measure():
 
     for i in range(1, len(index) + 1):
         j = i - 1
-        if j == 0:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 0
-        elif j == 1:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 22.5
-        elif j == 2:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 45
-        elif j == 3:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 22.5 + 45
-        elif j == 4:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 90
-        elif j == 5:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 22.5 + 90
-        elif j == 6:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 45 + 90
-        elif j == 7:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 0, serial_obj=ser)
-            phs_state = 22.5 + 45 + 90
-        elif j == 8:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 180
-        elif j == 9:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 22.5 + 180
-        elif j == 10:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 45 + 180
-        elif j == 11:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 0, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 22.5 + 45 + 180
-        elif j == 12:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 90 + 180
-        elif j == 13:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 0, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 22.5 + 90 + 180
-        elif j == 14:
-            receiver_control('bit5', 0, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 45 + 90 + 180
-        elif j == 15:
-            receiver_control('bit5', 1, serial_obj=ser)
-            receiver_control('bit6', 1, serial_obj=ser)
-            receiver_control('bit3', 1, serial_obj=ser)
-            receiver_control('bit4', 1, serial_obj=ser)
-            phs_state = 22.5 + 45 + 90 + 180
+        receiver_control('bit5', bit_state[j][0][0], serial_obj=ser)
+        receiver_control('bit6', bit_state[j][0][1], serial_obj=ser)
+        receiver_control('bit3', bit_state[j][0][2], serial_obj=ser)
+        receiver_control('bit4', bit_state[j][0][3], serial_obj=ser)
+        phs_state = bit_state[j][1]
 
         st_arr[i - 1] = phs_state
 
