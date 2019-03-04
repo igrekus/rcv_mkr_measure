@@ -413,7 +413,7 @@ def measure():
         mag_s21_arr[i - 1] = s_data
 
         # phsS21
-        pna.write(pna, 'CALC2:PAR:SEL "CH2_S21"')
+        pna.write('CALC2:PAR:SEL "CH2_S21"')
         s_data = pna.query('CALC2:DATA? FDATA')
         phs_s21_arr[i - 1] = s_data
 
