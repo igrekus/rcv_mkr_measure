@@ -410,22 +410,22 @@ def measure():
         # magS21
         pna.write('CALC1:PAR:SEL "CH1_S21"')
         s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s21_arr[i - 1][:] = s_data[:]
+        mag_s21_arr[i - 1] = s_data
 
         # phsS21
         pna.write(pna, 'CALC2:PAR:SEL "CH2_S21"')
         s_data = pna.query('CALC2:DATA? FDATA')
-        phs_s21_arr[i - 1][:] = s_data[:]
+        phs_s21_arr[i - 1] = s_data
 
         # magS11
         pna.write('CALC1:PAR:SEL "CH1_S11"')
         s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s11_arr[i - 1][:] = s_data[:]
+        mag_s11_arr[i - 1] = s_data
 
         # magS22
         pna.write('CALC1:PAR:SEL "CH1_S22"')
         s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s22_arr[i - 1][:] = s_data[:]
+        mag_s22_arr[i - 1] = s_data
 
     pna.close()
 
