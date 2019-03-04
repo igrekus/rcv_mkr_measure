@@ -6,8 +6,8 @@ import sys
 
 from serialmock import SerialMock
 
-ser = serial.Serial(port='COM10', baudrate=115200)
-port = SerialMock()
+# ser = serial.Serial(port='COM10', baudrate=115200)
+ser = SerialMock()
 
 
 def com_port_init(serial_obj):
@@ -277,7 +277,7 @@ def save_file(file_path, freq, gamma_inp, gamma_outp, mS21, pS21, s21_min, s21_m
 def measure():
     receiver_control('0', 0, serial_obj=ser)
 
-    pna, err = init_pna(1)
+    pna, err = init_pna(1, pna=pna_mock)
 
     index = list(range(16))
 
