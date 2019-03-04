@@ -36,7 +36,6 @@ def com_port_init(serial_obj):
 
 
 def com_port(serial_obj):
-
     try:
         serial_obj.open()
         serial_obj.write(b'$KE\r\n')
@@ -150,8 +149,8 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
     N = len(freq)
     ofs = 2
 
-    B = [[None] * (num_states + ofs)] * 4   # empty array to wipe xlsx-file header
-    C = [[None] * (16 * 4 + 2)] * N + 10   # empty array to wipe xlsx-file
+    B = [[None] * (num_states + ofs)] * 4  # empty array to wipe xlsx-file header
+    C = [[None] * (16 * 4 + 2)] * N + 10  # empty array to wipe xlsx-file
 
     sheet = 1
     xlRange = 'A1'
@@ -187,7 +186,7 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
     wb.save('out.xlsx')
 
     for i in range(1, N + 1):
-        ws.cell(row=i, column=2, value=freq[i-1] * 1e-6)
+        ws.cell(row=i, column=2, value=freq[i - 1] * 1e-6)
         ws.cell(row=i, column=1, value=f'{i:03d}')
 
     pivot_row = 5
@@ -412,7 +411,7 @@ def measure():
         mag_s21_arr[i - 1][:] = s_data[:]
 
         # phsS21
-        pna.write(pna,'CALC2:PAR:SEL "CH2_S21"')
+        pna.write(pna, 'CALC2:PAR:SEL "CH2_S21"')
         s_data = pna.query('CALC2:DATA? FDATA')
         phs_s21_arr[i - 1][:] = s_data[:]
 
@@ -474,7 +473,7 @@ def measure():
     s21_MAX = max(s21_max)
     s21_MIN = min(s21_min)
     delta_Kp = abs(s21_MAX) - abs(s21_MIN)
-    sred_Kp = (s21_MAX + s21_MIN)/2
+    sred_Kp = (s21_MAX + s21_MIN) / 2
 
     print('delta_Kp=', delta_Kp)
     print('approx median amp=', sred_Kp)
@@ -517,5 +516,4 @@ def measure():
 
 
 if __name__ == '__main__':
-
     measure()
