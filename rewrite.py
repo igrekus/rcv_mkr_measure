@@ -211,6 +211,7 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
             ws.cell(row=i + 1 + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
             ws.cell(row=i + 1 + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
 
+    wb.save('out.xlsx')
     print('saved .xlsx:', file_path)
 
 
