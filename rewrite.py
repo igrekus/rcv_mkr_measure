@@ -46,21 +46,6 @@ def jerome_init(jerome):
     jerome.write(b'$KE,WRA,000000010101010000000000\r\n')
 
 
-def com_port(serial_obj):
-    try:
-        serial_obj.open()
-        serial_obj.write(b'$KE\r\n')
-        ans = serial_obj.read_all()
-        if b'#OK' not in ans:
-            print('error opening port')
-            sys.exit(1)
-
-    except Exception as ex:
-        print(ex)
-
-    return serial_obj
-
-
 def receiver_control(bit_str: str, state: int, serial_obj):
 
     code_pos, code_neg = 0, 0
@@ -83,14 +68,11 @@ def receiver_control(bit_str: str, state: int, serial_obj):
     cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}\r\n'
     cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}\r\n'
 
-    serial_obj = com_port(serial_obj=serial_obj)
-
     serial_obj.write(bytes(cmd_str_pos, encoding='ascii'))
     ans1 = serial_obj.read_all()
     serial_obj.write(bytes(cmd_str_neg, encoding='ascii'))
     ans2 = serial_obj.read_all()
 
-    serial_obj.close()
     return ans1, ans2
 
 
