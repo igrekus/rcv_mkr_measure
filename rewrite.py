@@ -169,12 +169,6 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
     N = len(freq)
     ofs = 2
 
-    B = [[None] * (num_states + ofs)] * 4  # empty array to wipe xlsx-file header
-    C = [[None] * (16 * 4 + 2)] * N + 10  # empty array to wipe xlsx-file
-
-    sheet = 1
-    xlRange = 'A1'
-
     wb = openpyxl.Workbook()
     ws = wb.active
 
@@ -187,9 +181,6 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
     ws.cell(row=1, column=3, value=f'date:{str_date} time:{str_time}')
     ws.cell(row=3, column=1, value='пункт')
     ws.cell(row=3, column=2, value='частота, МГц')
-
-    i = 3
-    k = 1
 
     for j in range(1, num_states + 1):
         k = j * 4 - 3 + ofs
@@ -432,8 +423,8 @@ def measure():
 
     gamma_inp, gamma_outp = calc_gammas(index, mag_s11_arr, mag_s22_arr)
 
-    # if flag_save_on == 1:
-    #     init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    if flag_save_on == 1:
+        init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
     ind_up_frq = find_up_freq_index(df, frq, num_pts, threshold=1.31e9)
     ind_dn_frq = find_down_freq_index(df, frq, num_pts, threshold=1.21e9)
