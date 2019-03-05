@@ -390,8 +390,8 @@ def measure():
 
     print('delta_Kp=', delta_Kp)
     print('approx median amp=', sred_Kp)
-    print('Max_S21 = %3.1f\n', s21_MAX)
-    print('Min_S21 = %3.1f\n', s21_MIN)
+    print('Max_S21 = ', s21_MAX)
+    print('Min_S21 = ', s21_MIN)
 
     eps = 1e-1
 
