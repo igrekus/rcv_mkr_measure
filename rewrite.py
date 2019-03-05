@@ -349,7 +349,7 @@ def measure():
 
     gamma_inp = list()
     gamma_outp = list()
-    for i in range(1, len(index) + 1):
+    for i in range(0, len(index)):
         gamma_inp.append(VSWR_calc(mag_s11_arr[i]))
         gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
 
