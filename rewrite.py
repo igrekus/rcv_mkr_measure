@@ -298,19 +298,25 @@ def get_param(pna, calc, param):
     return pna.query(f'CALC{calc}:PAR:SEL "{param}";CALC{calc}:DATA? FDATA')
 
 
+def get_freqs(pna):
+    pna.write('CALC1:PAR:SEL "CH1_S21"')
+    pna.write('FORM:DATA REAL,32')
+    return pna.query('SENS1:X?')
+
+
 def measure():
+    flag_save_on = 1
+    file_name = 'xlsx\\out.xlsx'
+
     result = receiver_control('0', 0, serial_obj=ser)
 
     pna, err = init_pna(1, pna=pna_mock)
 
     index = list(range(16))
-
-    flag_save_on = 1
-
-    file_name = 'xlsx\\out.xlsx'
+    num_ph = len(index)
 
     num_pts = pna.query('SENS1:SWE:POINts?')
-    num_ph = len(index)
+    frq = get_freqs(pna)
 
     mag_s11_arr = list()
     mag_s22_arr = list()
@@ -318,10 +324,6 @@ def measure():
     phs_s21_arr = list()
 
     st_arr = list()
-
-    pna.write('CALC1:PAR:SEL "CH1_S21"')
-    pna.write('FORM:DATA REAL,32')
-    frq = pna.query('SENS1:X?')
 
     for i in index:
         receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
