@@ -386,8 +386,6 @@ def calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph):
     eps = 1e-1
     ref_pnt_inp = list()
     ref_pnt_outp = list()
-    summ_inp = list()
-    summ_outp = list()
     for j in range(num_ph):
         temp_gamma_inp = list()
         temp_gamma_outp = list()
@@ -399,7 +397,7 @@ def calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph):
 
         ref_pnt_inp.append(temp_gamma_inp)
         ref_pnt_outp.append(temp_gamma_outp)
-    return ref_pnt_inp, ref_pnt_outp, summ_inp, summ_outp
+    return ref_pnt_inp, ref_pnt_outp
 
 
 def measure():
@@ -440,7 +438,7 @@ def measure():
     print('Max_S21 = ', s21_MAX)
     print('Min_S21 = ', s21_MIN)
 
-    ref_pnt_inp, ref_pnt_outp, summ_inp, summ_outp = calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph)
+    ref_pnt_inp, ref_pnt_outp = calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph)
 
     for j in range(num_ph):
         summ_inp.append(sum(ref_pnt_inp[j]))
