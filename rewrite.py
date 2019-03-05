@@ -8,6 +8,8 @@ import sys
 from pnamock import PnaMock
 from serialmock import SerialMock
 
+
+is_mock = True
 # ser = serial.Serial(port='COM10', baudrate=115200)
 ser = SerialMock()
 pna_mock = PnaMock()
@@ -463,6 +465,8 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
 
 def find_measure_rig(pna_addr):
+    if is_mock:
+        return PnaMock(), SerialMock()
     return find_jerome(), find_pna(pna_addr)
 
 
