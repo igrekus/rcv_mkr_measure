@@ -317,9 +317,6 @@ def measure():
     mag_s21_arr = [[0] * num_pts] * num_ph
     phs_s21_arr = [[0] * num_pts] * num_ph
 
-    gamma_inp = [[0] * num_pts] * num_ph
-    gamma_outp = [[0] * num_pts] * num_ph
-
     st_arr = [0] * num_ph
 
     pna.write('CALC1:PAR:SEL "CH1_S21"')
