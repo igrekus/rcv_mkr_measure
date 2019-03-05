@@ -400,6 +400,15 @@ def calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph):
     return ref_pnt_inp, ref_pnt_outp
 
 
+def calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp):
+    summ_inp = list()
+    summ_outp = list()
+    for j in range(num_ph):
+        summ_inp.append(sum(ref_pnt_inp[j]))
+        summ_outp.append(sum(ref_pnt_outp[j]))
+    return summ_inp, summ_outp
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -440,9 +449,7 @@ def measure():
 
     ref_pnt_inp, ref_pnt_outp = calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph)
 
-    for j in range(num_ph):
-        summ_inp.append(sum(ref_pnt_inp[j]))
-        summ_outp.append(sum(ref_pnt_outp[j]))
+    summ_inp, summ_outp = calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp)
 
     if summ_inp == 0:
         print('WSVR in < 1.5')
