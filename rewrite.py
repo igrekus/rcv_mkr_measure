@@ -312,30 +312,29 @@ def measure():
     num_pts = pna.query('SENS1:SWE:POINts?')
     num_ph = len(index)
 
-    mag_s11_arr = [[0] * num_pts] * num_ph
-    mag_s22_arr = [[0] * num_pts] * num_ph
-    mag_s21_arr = [[0] * num_pts] * num_ph
-    phs_s21_arr = [[0] * num_pts] * num_ph
+    mag_s11_arr = list()
+    mag_s22_arr = list()
+    mag_s21_arr = list()
+    phs_s21_arr = list()
 
-    st_arr = [0] * num_ph
+    st_arr = list()
 
     pna.write('CALC1:PAR:SEL "CH1_S21"')
     pna.write('FORM:DATA REAL,32')
     frq = pna.query('SENS1:X?')
 
-    for i in range(0, len(index)):
+    for i in index:
         receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
         receiver_control('bit6', bit_state[i][0][1], serial_obj=ser)
         receiver_control('bit3', bit_state[i][0][2], serial_obj=ser)
         receiver_control('bit4', bit_state[i][0][3], serial_obj=ser)
-        phs_state = bit_state[i][1]
 
-        st_arr[i] = phs_state
+        st_arr.append(bit_state[i][1])   # phs_state
 
-        mag_s21_arr[i] = get_param(pna=pna, calc=1, param='CH1_S21')
-        phs_s21_arr[i] = get_param(pna=pna, calc=2, param='CH2_S21')
-        mag_s11_arr[i] = get_param(pna=pna, calc=1, param='CH1_S11')
-        mag_s22_arr[i] = get_param(pna=pna, calc=1, param='CH1_S22')
+        mag_s21_arr.append(get_param(pna=pna, calc=1, param='CH1_S21'))
+        phs_s21_arr.append(get_param(pna=pna, calc=2, param='CH2_S21'))
+        mag_s11_arr.append(get_param(pna=pna, calc=1, param='CH1_S11'))
+        mag_s22_arr.append(get_param(pna=pna, calc=1, param='CH1_S22'))
 
     pna.close()
 
