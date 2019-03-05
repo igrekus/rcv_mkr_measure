@@ -1,4 +1,5 @@
 import datetime
+import time
 import openpyxl
 import pyvisa
 import serial
@@ -29,6 +30,7 @@ bit_state = {
     14: ([0, 1, 1, 1], 45.0 + 90.0 + 180.0),
     15: ([1, 1, 1, 1], 22.5 + 45.0 + 90.0 + 180.0)
 }
+
 
 def com_port_init(serial_obj):
     try:
@@ -399,9 +401,17 @@ def calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp):
     return summ_inp, summ_outp
 
 
-def measure():
+def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
+
+    jerome, pna = find_measure_rig(pna_addr)
+    if not jerome:
+        print('error: jerome not found')
+        sys.exit(1)
+    if not pna:
+        print('error: PNA not found')
+        sys.exit(2)
 
     result = receiver_control('0', 0, serial_obj=ser)
 
@@ -452,5 +462,45 @@ def measure():
         print('!!! WS?VR out > 1.5 !!!')
 
 
+def find_measure_rig(pna_addr):
+    return find_jerome(), find_pna(pna_addr)
+
+
+def find_jerome():
+
+    def find_available_ports():
+        available_ports = list()
+        for i in range(256):
+            port = f'COM{i+1}'
+            try:
+                s = serial.Serial(port=port, baudrate=115200)
+                s.close()
+                available_ports.append(port)
+            except (OSError, serial.SerialException):
+                pass
+        return available_ports
+
+    for port in find_available_ports():
+        s = serial.Serial(port=port, baudrate=115200)
+        s.write(b'$KE\r\n')
+        time.sleep(0.1)
+        ans = s.read_all()
+        if b'#OK' in ans:
+            return s
+
+    return None
+
+
+def find_pna(pna_addr):
+    rm = pyvisa.ResourceManager()
+    inst = rm.open_resource(pna_addr)
+
+    ans = inst.query('*IDN?')
+    if 'E8362B' in ans:
+        return inst
+
+    return None
+
+
 if __name__ == '__main__':
-    measure()
+    measure(pna_addr=sys.argv[1])
