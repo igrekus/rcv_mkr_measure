@@ -382,6 +382,26 @@ def calc_out_stats(s21_max, s21_min):
     return delta_Kp, s21_MAX, s21_MIN, sred_Kp
 
 
+def calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph):
+    eps = 1e-1
+    ref_pnt_inp = list()
+    ref_pnt_outp = list()
+    summ_inp = list()
+    summ_outp = list()
+    for j in range(num_ph):
+        temp_gamma_inp = list()
+        temp_gamma_outp = list()
+        for i in range(ind_dn_frq, ind_up_frq + 1):
+            if gamma_inp[j][i] > (1.5 + eps):
+                temp_gamma_inp.append(1)
+            if gamma_outp[j][i] > (1.5 + eps):
+                temp_gamma_outp.append(1)
+
+        ref_pnt_inp.append(temp_gamma_inp)
+        ref_pnt_outp.append(temp_gamma_outp)
+    return ref_pnt_inp, ref_pnt_outp, summ_inp, summ_outp
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -420,24 +440,7 @@ def measure():
     print('Max_S21 = ', s21_MAX)
     print('Min_S21 = ', s21_MIN)
 
-    eps = 1e-1
-
-    ref_pnt_inp = list()
-    ref_pnt_outp = list()
-    summ_inp = list()
-    summ_outp = list()
-
-    for j in range(num_ph):
-        temp_gamma_inp = list()
-        temp_gamma_outp = list()
-        for i in range(ind_dn_frq, ind_up_frq + 1):
-            if gamma_inp[j][i] > (1.5 + eps):
-                temp_gamma_inp.append(1)
-            if gamma_outp[j][i] > (1.5 + eps):
-                temp_gamma_outp.append(1)
-
-        ref_pnt_inp.append(temp_gamma_inp)
-        ref_pnt_outp.append(temp_gamma_outp)
+    ref_pnt_inp, ref_pnt_outp, summ_inp, summ_outp = calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph)
 
     for j in range(num_ph):
         summ_inp.append(sum(ref_pnt_inp[j]))
