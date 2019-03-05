@@ -341,6 +341,22 @@ def calc_gammas(index, mag_s11_arr, mag_s22_arr):
     return gamma_inp, gamma_outp
 
 
+def find_up_freq_index(df, frq, num_pts, threshold):
+    ind_up_frq = 0
+    for i in range(num_pts - 1, -1, -1):
+        if (threshold - df) < frq[i] < (threshold + df):
+            ind_up_frq = i
+    return ind_up_frq
+
+
+def find_down_freq_index(df, frq, num_pts, threshold):
+    ind_dn_frq = 0
+    for i in range(num_pts):
+        if (threshold - df) < frq[i] < (threshold + df):
+            ind_dn_frq = i
+    return ind_dn_frq
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -367,15 +383,8 @@ def measure():
     # if flag_save_on == 1:
     #     init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
-    ind_up_frq = 0
-    for i in range(num_pts - 1, -1, -1):
-        if (1.31e9 - df) < frq[i] < (1.31e9 + df):
-            ind_up_frq = i
-
-    ind_dn_frq = 0
-    for i in range(num_pts):
-        if (1.21e9 - df) < frq[i] < (1.21e9 + df):
-            ind_dn_frq = i
+    ind_up_frq = find_up_freq_index(df, frq, num_pts, threshold=1.31e9)
+    ind_dn_frq = find_down_freq_index(df, frq, num_pts, threshold=1.21e9)
 
     s21_max = list()
     s21_min = list()
