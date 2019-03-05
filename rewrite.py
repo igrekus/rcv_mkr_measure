@@ -325,6 +325,13 @@ def measure_s_params(index, pna):
     return mag_s11_arr, mag_s21_arr, mag_s22_arr, st_arr
 
 
+def reset_commutator():
+    receiver_control('bit3', 1, serial_obj=ser)
+    receiver_control('bit4', 1, serial_obj=ser)
+    receiver_control('bit5', 1, serial_obj=ser)
+    receiver_control('bit6', 1, serial_obj=ser)
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -343,10 +350,7 @@ def measure():
 
     pna.close()
 
-    receiver_control('bit3', 1, serial_obj=ser)
-    receiver_control('bit4', 1, serial_obj=ser)
-    receiver_control('bit5', 1, serial_obj=ser)
-    receiver_control('bit6', 1, serial_obj=ser)
+    reset_commutator()
 
     gamma_inp = list()
     gamma_outp = list()
