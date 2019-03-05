@@ -354,6 +354,7 @@ def measure():
 
     num_pts = pna.query('SENS1:SWE:POINts?')
     frq = get_freqs(pna)
+    df = frq[1] - frq[0]
 
     mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna)
 
@@ -365,8 +366,6 @@ def measure():
 
     # if flag_save_on == 1:
     #     init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
-
-    df = frq[1] - frq[0]
 
     ind_up_frq = 0
     for i in range(num_pts - 1, -1, -1):
