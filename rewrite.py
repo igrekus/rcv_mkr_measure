@@ -451,12 +451,12 @@ def measure():
 
     summ_inp, summ_outp = calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp)
 
-    if summ_inp == 0:
+    if sum(summ_inp) == 0:
         print('WSVR in < 1.5')
     else:
         print('!!! WSVR in > 1.5 !!!')
 
-    if summ_outp == 0:
+    if sum(summ_outp) == 0:
         print('WSVR out < 1.5')
     else:
         print('!!! WS?VR out > 1.5 !!!')
