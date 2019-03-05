@@ -199,15 +199,15 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
         ws.cell(row=5 + i, column=2, value=freq[i] * 1e-6)
 
     pivot_row = 5
-    pivot_col = 1
+    pivot_col = 0
 
     for j in range(num_states):
         k = (j + 1) * 4 - 3 + ofs
         for i in range(N):
-            ws.cell(row=i + 1 + pivot_row, column=k + 0 + pivot_col, value=gamma_inp[j][i])
-            ws.cell(row=i + 1 + pivot_row, column=k + 1 + pivot_col, value=gamma_outp[j][i])
-            ws.cell(row=i + 1 + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
-            ws.cell(row=i + 1 + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
+            ws.cell(row=i + pivot_row, column=k + 0 + pivot_col, value=gamma_inp[j][i])
+            ws.cell(row=i + pivot_row, column=k + 1 + pivot_col, value=gamma_outp[j][i])
+            ws.cell(row=i + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
+            ws.cell(row=i + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
 
     wb.save('out.xlsx')
     print('saved .xlsx:', file_path)
