@@ -213,7 +213,7 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
             ws.cell(row=i + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
             ws.cell(row=i + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
 
-    wb.save('out.xlsx')
+    wb.save(file_path)
     print('saved .xlsx:', file_path)
 
 
@@ -404,10 +404,11 @@ def calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp):
 
 
 def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
-    flag_save_on = 1
-    file_name = 'xlsx\\out.xlsx'
+
+    file_name = '.\\xlsx\\out.xlsx'
 
     jerome, pna = find_measure_rig(pna_addr)
+
     if not jerome:
         print('error: jerome not found')
         sys.exit(1)
@@ -434,8 +435,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     gamma_inp, gamma_outp = calc_gammas(index, mag_s11_arr, mag_s22_arr)
 
-    if flag_save_on == 1:
-        init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
     ind_up_frq = find_up_freq_index(df, frq, num_pts, threshold=1.31e9)
     ind_dn_frq = find_down_freq_index(df, frq, num_pts, threshold=1.21e9)
