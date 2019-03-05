@@ -400,17 +400,17 @@ def measure():
     summ_inp = list()
     summ_outp = list()
 
-    l = 0
-    k = 0
-
     for j in range(num_ph):
+        temp_gamma_inp = list()
+        temp_gamma_outp = list()
         for i in range(ind_dn_frq, ind_up_frq + 1):
             if gamma_inp[j][i] > (1.5 + eps):
-                ref_pnt_inp[j][l] = 1
-                l += 1
+                temp_gamma_inp.append(1)
             if gamma_outp[j][i] > (1.5 + eps):
-                ref_pnt_outp[j][k] = 1
-                k += 1
+                temp_gamma_outp.append(1)
+
+        ref_pnt_inp.append(temp_gamma_inp)
+        ref_pnt_outp.append(temp_gamma_outp)
 
     for j in range(num_ph):
         summ_inp[j] = sum(ref_pnt_inp[j])
