@@ -360,7 +360,7 @@ def measure():
 
     ind_up_frq = 0
     for i in range(num_pts - 1, -1, -1):
-        if (1.32e9 - df) < frq[i] < (1.32e9 + df):
+        if (1.31e9 - df) < frq[i] < (1.31e9 + df):
             ind_up_frq = i
 
     ind_dn_frq = 0
