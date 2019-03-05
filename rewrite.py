@@ -322,7 +322,7 @@ def measure_s_params(index, pna):
         phs_s21_arr.append(get_param(pna=pna, calc=2, param='CH2_S21'))
         mag_s11_arr.append(get_param(pna=pna, calc=1, param='CH1_S11'))
         mag_s22_arr.append(get_param(pna=pna, calc=1, param='CH1_S22'))
-    return mag_s11_arr, mag_s21_arr, mag_s22_arr, st_arr
+    return mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr
 
 
 def reset_commutator():
@@ -355,7 +355,7 @@ def measure():
     num_pts = pna.query('SENS1:SWE:POINts?')
     frq = get_freqs(pna)
 
-    mag_s11_arr, mag_s21_arr, mag_s22_arr, st_arr = measure_s_params(index, pna)
+    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna)
 
     pna.close()
 
