@@ -364,15 +364,15 @@ def measure():
         if (1.21e9 - df) < frq[i] < (1.21e9 + df):
             ind_dn_frq = i
 
-    s21_max = [0] * len(index)
-    s21_min = [0] * len(index)
-    delta_s21 = [0] * len(index)
+    s21_max = list()
+    s21_min = list()
+    delta_s21 = list()
 
-    for j in range(len(index)):
+    for j in index:
         temp = mag_s21_arr[j][ind_dn_frq:ind_up_frq]
-        s21_max[j] = max(temp)
-        s21_min[j] = min(temp)
-        delta_s21[j] = s21_max[j] - s21_min[j]
+        s21_max.append(max(temp))
+        s21_min.append(min(temp))
+        delta_s21.append(s21_max[j] - s21_min[j])
 
         print('phase:', st_arr[j])
         print('s21_max=', s21_max[j])
