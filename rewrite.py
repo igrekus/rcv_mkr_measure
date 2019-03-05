@@ -332,6 +332,15 @@ def reset_commutator():
     receiver_control('bit6', 1, serial_obj=ser)
 
 
+def calc_gammas(index, mag_s11_arr, mag_s22_arr):
+    gamma_inp = list()
+    gamma_outp = list()
+    for i in index:
+        gamma_inp.append(VSWR_calc(mag_s11_arr[i]))
+        gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
+    return gamma_inp, gamma_outp
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -352,11 +361,7 @@ def measure():
 
     reset_commutator()
 
-    gamma_inp = list()
-    gamma_outp = list()
-    for i in index:
-        gamma_inp.append(VSWR_calc(mag_s11_arr[i]))
-        gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
+    gamma_inp, gamma_outp = calc_gammas(index, mag_s11_arr, mag_s22_arr)
 
     # if flag_save_on == 1:
     #     init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
