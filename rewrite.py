@@ -356,7 +356,6 @@ def measure():
         gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
 
     if flag_save_on == 1:
-        # TODO write save func
         init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
     df = frq[1] - frq[0]
