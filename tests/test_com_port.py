@@ -1,11 +1,11 @@
 from pyexpect import expect
-from rewrite import com_port, com_port_init
+from rewrite import com_port, jerome_init
 from serialmock import SerialMock
 
 
 def test_com_port_init():
 
-    s = com_port_init(serial_obj=SerialMock())
+    s = jerome_init(jerome=SerialMock())
     s.open()
     s.write(b'$KE,IO,SET,7,0\r\n')
     ans1 = s.read_all()

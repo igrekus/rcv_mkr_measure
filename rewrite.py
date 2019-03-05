@@ -34,29 +34,16 @@ bit_state = {
 }
 
 
-def com_port_init(serial_obj):
-    try:
-        serial_obj.open()
-        serial_obj.write(b'$KE\r\n')
-        ans = serial_obj.read_all()
-        if b'#OK' not in ans:
-            print('error opening port')
-            sys.exit(1)
-
-    except Exception as ex:
-        print(ex)
-
-    serial_obj.write(b'$KE,IO,SET,7,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,8,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,9,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,10,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,11,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,12,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,13,0\r\n')
-    serial_obj.write(b'$KE,IO,SET,14,0\r\n')
-    serial_obj.write(b'$KE,WRA,000000010101010000000000\r\n')
-
-    return serial_obj
+def jerome_init(jerome):
+    jerome.write(b'$KE,IO,SET,7,0\r\n')
+    jerome.write(b'$KE,IO,SET,8,0\r\n')
+    jerome.write(b'$KE,IO,SET,9,0\r\n')
+    jerome.write(b'$KE,IO,SET,10,0\r\n')
+    jerome.write(b'$KE,IO,SET,11,0\r\n')
+    jerome.write(b'$KE,IO,SET,12,0\r\n')
+    jerome.write(b'$KE,IO,SET,13,0\r\n')
+    jerome.write(b'$KE,IO,SET,14,0\r\n')
+    jerome.write(b'$KE,WRA,000000010101010000000000\r\n')
 
 
 def com_port(serial_obj):
@@ -75,14 +62,6 @@ def com_port(serial_obj):
 
 
 def receiver_control(bit_str: str, state: int, serial_obj):
-    # для переключения выводов оснастки
-    # bit_str {bit3,bit4,bit5,bit6}
-    # /state {1, 0}
-
-    if bit_str == '0':
-        serial_obj = com_port_init(serial_obj=serial_obj)
-        serial_obj.close()
-        return 'init complete'
 
     code_pos, code_neg = 0, 0
     if bit_str == 'bit6':
@@ -416,7 +395,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
         print('error: PNA not found')
         sys.exit(2)
 
-    result = receiver_control('0', 0, serial_obj=ser)
+    jerome_init(jerome)
 
     pna, err = init_pna(1, pna=pna_mock)
 
