@@ -194,11 +194,9 @@ def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
         ws.cell(row=4, column=k + 2, value=f'{states[j - 1]} гр.')
         ws.cell(row=4, column=k + 3, value=f'{states[j - 1]} гр.')
 
-    wb.save('out.xlsx')
-
-    for i in range(1, N + 1):
-        ws.cell(row=i, column=2, value=freq[i - 1] * 1e-6)
-        ws.cell(row=i, column=1, value=f'{i:03d}')
+    for i in range(N):
+        ws.cell(row=5 + i, column=1, value=f'{i:03d}')
+        ws.cell(row=5 + i, column=2, value=freq[i] * 1e-6)
 
     pivot_row = 5
     pivot_col = 1
