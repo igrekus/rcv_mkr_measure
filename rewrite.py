@@ -395,11 +395,10 @@ def measure():
 
     eps = 1e-1
 
-    ref_pnt_inp = [[0] * (ind_up_frq - ind_dn_frq)] * num_ph
-    ref_pnt_outp = [[0] * (ind_up_frq - ind_dn_frq)] * num_ph
-
-    summ_inp = [0] * num_ph
-    summ_outp = [0] * num_ph
+    ref_pnt_inp = list()
+    ref_pnt_outp = list()
+    summ_inp = list()
+    summ_outp = list()
 
     l = 0
     k = 0
