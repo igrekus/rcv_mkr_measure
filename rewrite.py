@@ -304,6 +304,27 @@ def get_freqs(pna):
     return pna.query('SENS1:X?')
 
 
+def measure_s_params(index, pna):
+    mag_s11_arr = list()
+    mag_s22_arr = list()
+    mag_s21_arr = list()
+    phs_s21_arr = list()
+    st_arr = list()
+    for i in index:
+        receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
+        receiver_control('bit6', bit_state[i][0][1], serial_obj=ser)
+        receiver_control('bit3', bit_state[i][0][2], serial_obj=ser)
+        receiver_control('bit4', bit_state[i][0][3], serial_obj=ser)
+
+        st_arr.append(bit_state[i][1])  # phs_state
+
+        mag_s21_arr.append(get_param(pna=pna, calc=1, param='CH1_S21'))
+        phs_s21_arr.append(get_param(pna=pna, calc=2, param='CH2_S21'))
+        mag_s11_arr.append(get_param(pna=pna, calc=1, param='CH1_S11'))
+        mag_s22_arr.append(get_param(pna=pna, calc=1, param='CH1_S22'))
+    return mag_s11_arr, mag_s21_arr, mag_s22_arr, st_arr
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -318,25 +339,7 @@ def measure():
     num_pts = pna.query('SENS1:SWE:POINts?')
     frq = get_freqs(pna)
 
-    mag_s11_arr = list()
-    mag_s22_arr = list()
-    mag_s21_arr = list()
-    phs_s21_arr = list()
-
-    st_arr = list()
-
-    for i in index:
-        receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
-        receiver_control('bit6', bit_state[i][0][1], serial_obj=ser)
-        receiver_control('bit3', bit_state[i][0][2], serial_obj=ser)
-        receiver_control('bit4', bit_state[i][0][3], serial_obj=ser)
-
-        st_arr.append(bit_state[i][1])   # phs_state
-
-        mag_s21_arr.append(get_param(pna=pna, calc=1, param='CH1_S21'))
-        phs_s21_arr.append(get_param(pna=pna, calc=2, param='CH2_S21'))
-        mag_s11_arr.append(get_param(pna=pna, calc=1, param='CH1_S11'))
-        mag_s22_arr.append(get_param(pna=pna, calc=1, param='CH1_S22'))
+    mag_s11_arr, mag_s21_arr, mag_s22_arr, st_arr = measure_s_params(index, pna)
 
     pna.close()
 
@@ -351,8 +354,8 @@ def measure():
         gamma_inp.append(VSWR_calc(mag_s11_arr[i]))
         gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
 
-    if flag_save_on == 1:
-        init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    # if flag_save_on == 1:
+    #     init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
     df = frq[1] - frq[0]
 
