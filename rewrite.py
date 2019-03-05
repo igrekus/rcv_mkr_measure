@@ -294,6 +294,10 @@ def save_file(file_path, freq, gamma_inp, gamma_outp, mS21, pS21, s21_min, s21_m
     print('data saved to:', file_path)
 
 
+def get_param(pna, calc, param):
+    return pna.query(f'CALC{calc}:PAR:SEL "{param}";CALC{calc}:DATA? FDATA')
+
+
 def measure():
     result = receiver_control('0', 0, serial_obj=ser)
 
@@ -322,35 +326,19 @@ def measure():
     pna.write('FORM:DATA REAL,32')
     frq = pna.query('SENS1:X?')
 
-    for i in range(1, len(index) + 1):
-        j = i - 1
-        receiver_control('bit5', bit_state[j][0][0], serial_obj=ser)
-        receiver_control('bit6', bit_state[j][0][1], serial_obj=ser)
-        receiver_control('bit3', bit_state[j][0][2], serial_obj=ser)
-        receiver_control('bit4', bit_state[j][0][3], serial_obj=ser)
-        phs_state = bit_state[j][1]
+    for i in range(0, len(index)):
+        receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
+        receiver_control('bit6', bit_state[i][0][1], serial_obj=ser)
+        receiver_control('bit3', bit_state[i][0][2], serial_obj=ser)
+        receiver_control('bit4', bit_state[i][0][3], serial_obj=ser)
+        phs_state = bit_state[i][1]
 
-        st_arr[i - 1] = phs_state
+        st_arr[i] = phs_state
 
-        # magS21
-        pna.write('CALC1:PAR:SEL "CH1_S21"')
-        s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s21_arr[i - 1] = s_data
-
-        # phsS21
-        pna.write('CALC2:PAR:SEL "CH2_S21"')
-        s_data = pna.query('CALC2:DATA? FDATA')
-        phs_s21_arr[i - 1] = s_data
-
-        # magS11
-        pna.write('CALC1:PAR:SEL "CH1_S11"')
-        s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s11_arr[i - 1] = s_data
-
-        # magS22
-        pna.write('CALC1:PAR:SEL "CH1_S22"')
-        s_data = pna.query('CALC1:DATA? FDATA')
-        mag_s22_arr[i - 1] = s_data
+        mag_s21_arr[i] = get_param(pna=pna, calc=1, param='CH1_S21')
+        phs_s21_arr[i] = get_param(pna=pna, calc=2, param='CH2_S21')
+        mag_s11_arr[i] = get_param(pna=pna, calc=1, param='CH1_S11')
+        mag_s22_arr[i] = get_param(pna=pna, calc=1, param='CH1_S22')
 
     pna.close()
 
