@@ -374,6 +374,14 @@ def calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr):
     return s21_max, s21_min, delta_s21
 
 
+def calc_out_stats(s21_max, s21_min):
+    s21_MAX = max(s21_max)
+    s21_MIN = min(s21_min)
+    delta_Kp = abs(s21_MAX) - abs(s21_MIN)
+    sred_Kp = (s21_MAX + s21_MIN) / 2
+    return delta_Kp, s21_MAX, s21_MIN, sred_Kp
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -405,10 +413,7 @@ def measure():
 
     s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr)
 
-    s21_MAX = max(s21_max)
-    s21_MIN = min(s21_min)
-    delta_Kp = abs(s21_MAX) - abs(s21_MIN)
-    sred_Kp = (s21_MAX + s21_MIN) / 2
+    delta_Kp, s21_MAX, s21_MIN, sred_Kp = calc_out_stats(s21_max, s21_min)
 
     print('delta_Kp=', delta_Kp)
     print('approx median amp=', sred_Kp)
