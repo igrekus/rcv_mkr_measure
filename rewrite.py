@@ -413,8 +413,8 @@ def measure():
         ref_pnt_outp.append(temp_gamma_outp)
 
     for j in range(num_ph):
-        summ_inp[j] = sum(ref_pnt_inp[j])
-        summ_outp[j] = sum(ref_pnt_outp[j])
+        summ_inp.append(sum(ref_pnt_inp[j]))
+        summ_outp.append(sum(ref_pnt_outp[j]))
 
     if summ_inp == 0:
         print('WSVR in < 1.5')
