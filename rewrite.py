@@ -368,7 +368,6 @@ def measure():
         if (1.21e9 - df) < frq[i] < (1.21e9 + df):
             ind_dn_frq = i
 
-    # максимум для фиксированного состояния
     s21_max = [0] * len(index)
     s21_min = [0] * len(index)
     delta_s21 = [0] * len(index)
