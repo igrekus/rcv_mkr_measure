@@ -357,6 +357,23 @@ def find_down_freq_index(df, frq, num_pts, threshold):
     return ind_dn_frq
 
 
+def calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr):
+    s21_max = list()
+    s21_min = list()
+    delta_s21 = list()
+    for j in index:
+        temp = mag_s21_arr[j][ind_dn_frq:ind_up_frq]
+        s21_max.append(max(temp))
+        s21_min.append(min(temp))
+        delta_s21.append(s21_max[j] - s21_min[j])
+
+        print('phase:', st_arr[j])
+        print('s21_max=', s21_max[j])
+        print('s21_min=', s21_min[j])
+        print('delta_s21=', delta_s21[j])
+    return s21_max, s21_min, delta_s21
+
+
 def measure():
     flag_save_on = 1
     file_name = 'xlsx\\out.xlsx'
@@ -386,20 +403,7 @@ def measure():
     ind_up_frq = find_up_freq_index(df, frq, num_pts, threshold=1.31e9)
     ind_dn_frq = find_down_freq_index(df, frq, num_pts, threshold=1.21e9)
 
-    s21_max = list()
-    s21_min = list()
-    delta_s21 = list()
-
-    for j in index:
-        temp = mag_s21_arr[j][ind_dn_frq:ind_up_frq]
-        s21_max.append(max(temp))
-        s21_min.append(min(temp))
-        delta_s21.append(s21_max[j] - s21_min[j])
-
-        print('phase:', st_arr[j])
-        print('s21_max=', s21_max[j])
-        print('s21_min=', s21_min[j])
-        print('delta_s21=', delta_s21[j])
+    s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr)
 
     s21_MAX = max(s21_max)
     s21_MIN = min(s21_min)
