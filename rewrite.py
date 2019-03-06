@@ -311,17 +311,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     file_name = '.\\xlsx\\out.xlsx'
 
-    jerome, pna = find_measure_rig(pna_addr)
-
-    if not jerome:
-        print('error: jerome not found')
-        sys.exit(1)
-    if not pna:
-        print('error: PNA not found')
-        sys.exit(2)
-
-    jerome_init(jerome)
-    pna_init(pna)
+    jerome, pna = prepare_rig(pna_addr)
 
     freqs = get_freqs(pna)
 
@@ -361,6 +351,22 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
         print('WSVR out < 1.5')
     else:
         print('!!! WS?VR out > 1.5 !!!')
+
+
+def prepare_rig(pna_addr):
+    jerome, pna = find_measure_rig(pna_addr)
+
+    if not jerome:
+        print('error: jerome not found')
+        sys.exit(1)
+    if not pna:
+        print('error: PNA not found')
+        sys.exit(2)
+
+    jerome_init(jerome)
+    pna_init(pna)
+
+    return jerome, pna
 
 
 def find_measure_rig(pna_addr):
