@@ -323,27 +323,26 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     jerome_init(jerome)
     pna_init(pna)
 
-    num_ph = len(bit_state)
-    index = list(bit_state.keys())
+    num_ph = len(bit_states)
+    index = list(bit_states.keys())
 
-    num_pts = pna.query('SENS1:SWE:POINts?')
-    frq = get_freqs(pna)
-    df = frq[1] - frq[0]
+    freq_points_num = pna.query('SENS1:SWE:POINts?')
+    freqs = get_freqs(pna)
+    df = freqs[1] - freqs[0]
 
-    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna)
+    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna, jerome)
 
     pna.close()
+    reset_commutator(jerome)
 
-    reset_commutator()
+    gamma_inp, gamma_outp = calc_gammas(mag_s11_arr, mag_s22_arr)
 
-    gamma_inp, gamma_outp = calc_gammas(index, mag_s11_arr, mag_s22_arr)
+    # init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
-    init_file(file_name, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    ind_dn_frq = find_freq_index(freqs, threshold=1.21e9)
+    ind_up_frq = find_freq_index(freqs, threshold=1.31e9)
 
-    ind_up_frq = find_up_freq_index(df, frq, num_pts, threshold=1.31e9)
-    ind_dn_frq = find_down_freq_index(df, frq, num_pts, threshold=1.21e9)
-
-    s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr)
+    s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr)
 
     delta_Kp, s21_MAX, s21_MIN, sred_Kp = calc_out_stats(s21_max, s21_min)
 
@@ -352,9 +351,11 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     print('Max_S21 = ', s21_MAX)
     print('Min_S21 = ', s21_MIN)
 
-    ref_pnt_inp, ref_pnt_outp = calc_vswr_stats(gamma_inp, gamma_outp, ind_dn_frq, ind_up_frq, num_ph)
+    ref_pnt_inp = ref_pts_stats(gamma_inp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
+    ref_pnt_outp = ref_pts_stats(gamma_outp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
 
-    summ_inp, summ_outp = calc_overal_stats(num_ph, ref_pnt_inp, ref_pnt_outp)
+    summ_inp = [sum(pts) for pts in ref_pnt_inp]
+    summ_outp = [sum(pts) for pts in ref_pnt_outp]
 
     if sum(summ_inp) == 0:
         print('WSVR in < 1.5')
