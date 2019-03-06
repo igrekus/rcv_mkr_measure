@@ -259,18 +259,11 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     ref_pnt_inp = ref_pts_stats(gamma_inp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
     ref_pnt_outp = ref_pts_stats(gamma_outp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
 
-    summ_inp = [sum(pts) for pts in ref_pnt_inp]
-    summ_outp = [sum(pts) for pts in ref_pnt_outp]
+    summ_inp = sum([sum(pts) for pts in ref_pnt_inp])
+    summ_outp = sum([sum(pts) for pts in ref_pnt_outp])
 
-    if sum(summ_inp) == 0:
-        print('WSVR in < 1.5')
-    else:
-        print('!!! WSVR in > 1.5 !!!')
-
-    if sum(summ_outp) == 0:
-        print('WSVR out < 1.5')
-    else:
-        print('!!! WS?VR out > 1.5 !!!')
+    print('VSWR in < 1.5') if summ_inp == 0 else print('warning: VSWR in > 1.5')
+    print('VSWR out < 1.5') if summ_outp == 0 else print('warning: VSWR out > 1.5')
 
     init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
