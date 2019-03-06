@@ -275,12 +275,9 @@ def calc_gammas(mag_s11_arr, mag_s22_arr):
     return gamma_inp, gamma_outp
 
 
-def find_up_freq_index(df, frq, num_pts, threshold):
-    ind_up_frq = 0
-    for i in range(num_pts - 1, -1, -1):
-        if (threshold - df) < frq[i] < (threshold + df):
-            ind_up_frq = i
-    return ind_up_frq
+def find_freq_index(freqs: list, threshold):
+    df = freqs[1] - freqs[0]
+    return next((i for i, f in enumerate(freqs) if (threshold - df) < f < (threshold + df)), 0)
 
 
 def find_down_freq_index(df, frq, num_pts, threshold):
