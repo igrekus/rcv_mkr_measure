@@ -264,11 +264,9 @@ def measure_s_params(index, pna, jerome):
     return mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr
 
 
-def reset_commutator():
-    receiver_control('bit3', 1, serial_obj=ser)
-    receiver_control('bit4', 1, serial_obj=ser)
-    receiver_control('bit5', 1, serial_obj=ser)
-    receiver_control('bit6', 1, serial_obj=ser)
+def reset_commutator(jerome):
+    jerome_set_bit_pattern([1, 1, 1, 1], jerome=jerome)
+    jerome.close()
 
 
 def calc_gammas(index, mag_s11_arr, mag_s22_arr):
