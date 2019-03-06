@@ -14,23 +14,37 @@ is_mock = True
 ser = SerialMock()
 pna_mock = PnaMock()
 
-bit_state = {
-    0: ([0, 0, 0, 0], 0.0),
-    1: ([1, 0, 0, 0], 22.5),
-    2: ([0, 1, 0, 0], 45.0),
-    3: ([1, 1, 0, 0], 22.5 + 45.0),
-    4: ([0, 0, 1, 0], 90.0),
-    5: ([1, 0, 1, 0], 22.5 + 90.0),
-    6: ([0, 1, 1, 0], 45.0 + 90.0),
-    7: ([1, 1, 1, 0], 22.5 + 45.0 + 90.0),
-    8: ([0, 0, 0, 1], 180.0),
-    9: ([1, 0, 0, 1], 22.5 + 180.0),
-    10: ([0, 1, 0, 1], 45.0 + 180.0),
-    11: ([1, 1, 0, 1], 22.5 + 45.0 + 180.0),
-    12: ([0, 0, 1, 1], 90.0 + 180.0),
-    13: ([1, 0, 1, 1], 22.5 + 90.0 + 180.0),
-    14: ([0, 1, 1, 1], 45.0 + 90.0 + 180.0),
-    15: ([1, 1, 1, 1], 22.5 + 45.0 + 90.0 + 180.0)
+bits = {
+    5: [9, 10],
+    6: [7, 8],
+    3: [11, 12],
+    4: [13, 14]
+}
+
+phases = [
+    22.5,
+    45.0,
+    90.0,
+    180.0
+]
+
+bit_states = {
+    0: [0, 0, 0, 0],
+    1: [1, 0, 0, 0],
+    2: [0, 1, 0, 0],
+    3: [1, 1, 0, 0],
+    4: [0, 0, 1, 0],
+    5: [1, 0, 1, 0],
+    6: [0, 1, 1, 0],
+    7: [1, 1, 1, 0],
+    8: [0, 0, 0, 1],
+    9: [1, 0, 0, 1],
+    10: [0, 1, 0, 1],
+    11: [1, 1, 0, 1],
+    12: [0, 0, 1, 1],
+    13: [1, 0, 1, 1],
+    14: [0, 1, 1, 1],
+    15: [1, 1, 1, 1]
 }
 
 
@@ -46,34 +60,15 @@ def jerome_init(jerome):
     jerome.write(b'$KE,WRA,000000010101010000000000\r\n')
 
 
-def receiver_control(bit_str: str, state: int, serial_obj):
+def jerome_set_bit_pattern(pattern: list, jerome):
+    for bit, state in zip(bits.keys(), pattern):
+        write_bit(bit, state, jerome)
 
-    code_pos, code_neg = 0, 0
-    if bit_str == 'bit6':
-        code_pos, code_neg = 7, 8
-    elif bit_str == 'bit5':
-        code_pos, code_neg = 9, 10
-    elif bit_str == 'bit4':
-        code_pos, code_neg = 13, 14
-    elif bit_str == 'bit3':
-        code_pos, code_neg = 11, 12
 
-    if state == 1:
-        state_pos = 1
-        state_neg = 0
-    elif state == 0:
-        state_pos = 0
-        state_neg = 1
-
-    cmd_str_pos = f'$KE,WR,{code_pos},{state_pos}\r\n'
-    cmd_str_neg = f'$KE,WR,{code_neg},{state_neg}\r\n'
-
-    serial_obj.write(bytes(cmd_str_pos, encoding='ascii'))
-    ans1 = serial_obj.read_all()
-    serial_obj.write(bytes(cmd_str_neg, encoding='ascii'))
-    ans2 = serial_obj.read_all()
-
-    return ans1, ans2
+def write_bit(bit_n, state, jerome):
+    pos_addr, neg_addr = bits[bit_n]
+    jerome.write(bytes(f'$KE,WR,{pos_addr},{state}', encoding='ascii'))
+    jerome.write(bytes(f'$KE,WR,{neg_addr},{state ^ 1}', encoding='ascii'))
 
 
 def pna_init(pna):
@@ -247,7 +242,10 @@ def get_freqs(pna):
     return pna.query('SENS1:X?')
 
 
-def measure_s_params(index, pna):
+def get_phase_value(pattern):
+    return sum([v * p for v, p in zip(phases, pattern)])
+
+
     mag_s11_arr = list()
     mag_s22_arr = list()
     mag_s21_arr = list()
