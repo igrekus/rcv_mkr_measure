@@ -99,6 +99,8 @@ def pna_init(pna):
     pna.write('DISP:WIND1:TRAC1:Y:SCAL:AUTO')
     pna.write('DISP:WIND2:TRAC1:Y:SCAL:AUTO')
 
+    pna.write(f'FORM:DATA ASCII')
+
 
 def VSWR_calc(inp_S: list):
     tmp_inp_S = map(lambda x: x/20, inp_S)
@@ -155,13 +157,15 @@ def save_xlsx(freqs, states, gamma_inp, gamma_outp, mS21, pS21):
 
 
 def get_measurement(pna, calc, param):
-    return pna.query(f'CALC{calc}:PAR:SEL "{param}";CALC{calc}:DATA? FDATA')
+    pna.write(f'CALC{calc}:PAR:SEL "{param}"')
+    pna.query('*OPC?')
+    return list(map(lambda x: float(x), pna.query(f'CALC{calc}:DATA? FDATA').split(',')))
 
 
 def get_freqs(pna):
     pna.write('CALC1:PAR:SEL "CH1_S21"')
-    pna.write('FORM:DATA REAL,32')
-    return pna.query('SENS1:X?')
+    pna.query('*OPC?')
+    return list(map(lambda x: float(x), pna.query('SENS1:X?').split(',')))
 
 
 def get_phase_value(pattern):
@@ -196,17 +200,22 @@ def find_freq_index(freqs: list, threshold):
     return next((i for i, f in enumerate(freqs) if (threshold - df) < f < (threshold + df)), 0)
 
 
-def calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr):
+def calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr, st_arr):
     s21_max = list()
     s21_min = list()
     delta_s21 = list()
 
-    for data in mag_s21_arr:
+    for i, data in enumerate(mag_s21_arr):
         temp = data[ind_dn_frq:ind_up_frq + 1]
         mx, mn = max(temp), min(temp)
         s21_max.append(mx)
         s21_min.append(mn)
         delta_s21.append(mx - mn)
+
+        print('\nphase=', st_arr[i])
+        print('s21_max', mx)
+        print('s21_min', mn)
+        print('delta_s21', mx - mn)
 
     return s21_max, s21_min, delta_s21
 
@@ -238,7 +247,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     ind_dn_frq = find_freq_index(freqs, threshold=1.21e9)
     ind_up_frq = find_freq_index(freqs, threshold=1.31e9)
 
-    s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr)
+    s21_max, s21_min, delta_s21 = calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr, st_arr)
 
     delta_Kp, s21_MAX, s21_MIN, sred_Kp = calc_out_stats(s21_max, s21_min)
 
@@ -312,6 +321,7 @@ def find_pna(pna_addr):
 
     ans = inst.query('*IDN?')
     if 'E8362B' in ans:
+        print(f'found {ans} at {pna_addr}')
         return inst
 
     return None
