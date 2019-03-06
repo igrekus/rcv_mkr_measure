@@ -323,12 +323,9 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     jerome_init(jerome)
     pna_init(pna)
 
-    num_ph = len(bit_states)
     index = list(bit_states.keys())
 
-    freq_points_num = pna.query('SENS1:SWE:POINts?')
     freqs = get_freqs(pna)
-    df = freqs[1] - freqs[0]
 
     mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna, jerome)
 
