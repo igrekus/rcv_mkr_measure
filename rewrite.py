@@ -269,12 +269,9 @@ def reset_commutator(jerome):
     jerome.close()
 
 
-def calc_gammas(index, mag_s11_arr, mag_s22_arr):
-    gamma_inp = list()
-    gamma_outp = list()
-    for i in index:
-        gamma_inp.append(VSWR_calc(mag_s11_arr[i]))
-        gamma_outp.append(VSWR_calc(mag_s22_arr[i]))
+def calc_gammas(mag_s11_arr, mag_s22_arr):
+    gamma_inp = [VSWR_calc(dataset) for dataset in mag_s11_arr]
+    gamma_outp = [VSWR_calc(dataset) for dataset in mag_s22_arr]
     return gamma_inp, gamma_outp
 
 
