@@ -108,128 +108,50 @@ def VSWR_calc(inp_S: list):
     return list(outp_G)
 
 
-def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
+def save_xlsx(freqs, states, gamma_inp, gamma_outp, mS21, pS21):
 
-    first_16_nonzero_elem_indices = [idx for idx, x in enumerate(states) if x != 0]
+    year, month, day, hour, minute, *rest = datetime.datetime.now().timetuple()
 
-    num_states = len(first_16_nonzero_elem_indices) + 1
-
-    N = len(freq)
-    ofs = 2
+    file_path = f'.\\xlsx\\VSWR-{year}-{month:02d}-{day:02d}-{hour:02d}.{minute:02d}.xlsx'
 
     wb = openpyxl.Workbook()
     ws = wb.active
 
-    str_y, str_mth, str_d, str_h, str_m, *rest = datetime.datetime.now().timetuple()
-    str_time = f'{str_h}:{str_m}'
-    str_date = f'{str_d}.{str_mth}.{str_y}'
+    wb_header_cell = ws['A1']
+    wb_header_cell.value = 'приемный модуль МШУ'
+    wb_header_cell.offset(0, 3).value = f'дата: {day:02d}.{month:02d}.{year}   время: {hour:02d}:{minute:02d}'
 
-    title = 'приемный модуль МШУ'
-    ws.cell(row=1, column=1, value=title)
-    ws.cell(row=1, column=3, value=f'date:{str_date} time:{str_time}')
-    ws.cell(row=3, column=1, value='пункт')
-    ws.cell(row=3, column=2, value='частота, МГц')
+    table_header_cell = wb_header_cell.offset(2, 0)
+    table_header_cell.value = 'пункт'
+    table_header_cell.offset(0, 1).value = 'частота, МГц'
 
-    for j in range(1, num_states + 1):
-        k = j * 4 - 3 + ofs
-        ws.cell(row=3, column=k + 0, value='SWR_in')
-        ws.cell(row=3, column=k + 1, value='SWR_out')
-        ws.cell(row=3, column=k + 2, value='S21,дБ')
-        ws.cell(row=3, column=k + 3, value='phase,гр.')
+    for i, state in enumerate(states):
+        batch_offset = 4 * i
+        table_header_cell.offset(0, 2 + batch_offset).value = 'КСВ вх.'
+        table_header_cell.offset(0, 3 + batch_offset).value = 'КСВ вых.'
+        table_header_cell.offset(0, 4 + batch_offset).value = 'S21, дБ'
+        table_header_cell.offset(0, 5 + batch_offset).value = 'фаза, гр.'
 
-        ws.cell(row=4, column=k + 0, value=f'{states[j - 1]} гр.')
-        ws.cell(row=4, column=k + 1, value=f'{states[j - 1]} гр.')
-        ws.cell(row=4, column=k + 2, value=f'{states[j - 1]} гр.')
-        ws.cell(row=4, column=k + 3, value=f'{states[j - 1]} гр.')
+        table_header_cell.offset(1, 2 + batch_offset).value = f'{state} гр.'
+        table_header_cell.offset(1, 3 + batch_offset).value = f'{state} гр.'
+        table_header_cell.offset(1, 4 + batch_offset).value = f'{state} гр.'
+        table_header_cell.offset(1, 5 + batch_offset).value = f'{state} гр.'
 
-    for i in range(N):
-        ws.cell(row=5 + i, column=1, value=f'{i:03d}')
-        ws.cell(row=5 + i, column=2, value=freq[i] * 1e-6)
+    table_data_cell = wb_header_cell.offset(4, 0)
+    for i, freq in enumerate(freqs):
+        table_data_cell.offset(i, 0).value = f'{i:04d}'
+        table_data_cell.offset(i, 1).value = f'{freq * 1e-6:.2f}'
 
-    pivot_row = 5
-    pivot_col = 0
-
-    for j in range(num_states):
-        k = (j + 1) * 4 - 3 + ofs
-        for i in range(N):
-            ws.cell(row=i + pivot_row, column=k + 0 + pivot_col, value=gamma_inp[j][i])
-            ws.cell(row=i + pivot_row, column=k + 1 + pivot_col, value=gamma_outp[j][i])
-            ws.cell(row=i + pivot_row, column=k + 2 + pivot_col, value=mS21[j][i])
-            ws.cell(row=i + pivot_row, column=k + 3 + pivot_col, value=pS21[j][i])
+    for i in range(len(states)):
+        batch_offset = 4 * i
+        for j in range(len(freqs)):
+            table_data_cell.offset(j, 2 + batch_offset).value = gamma_inp[i][j]
+            table_data_cell.offset(j, 3 + batch_offset).value = gamma_outp[i][j]
+            table_data_cell.offset(j, 4 + batch_offset).value = mS21[i][j]
+            table_data_cell.offset(j, 5 + batch_offset).value = pS21[i][j]
 
     wb.save(file_path)
     print('saved .xlsx:', file_path)
-
-
-def save_file(file_path, freq, gamma_inp, gamma_outp, mS21, pS21, s21_min, s21_max, delta_s21, delta_Kp, states):
-    wb = openpyxl.load_workbook(file_path)
-    ws = wb.active
-
-    xls_str_start = 6  # перва¤ строка для записи значений
-    xls_cln_start = 3  # первый столбец для записи значений
-
-    N = len(freq)
-    temp = [0] * N
-
-    first_16_nonzero_elem_indices = [idx for idx, x in enumerate(states) if x != 0]
-    num_states = len(first_16_nonzero_elem_indices) + 1
-
-    indx = 0  # индекс смещения по колонкам
-
-    for j in range(1, num_states + 1):
-        ptr_cln = indx + xls_cln_start
-        temp[:] = gamma_inp[j - 1][:]
-        for row, value in enumerate(temp):
-            ws.cell(row=xls_str_start + row, column=ptr_cln, value=value)
-        indx += 4
-
-    indx = 1
-
-    for j in range(1, num_states + 1):
-        ptr_cln = indx + xls_cln_start
-        temp[:] = gamma_outp(j - 1)[:]
-        for row, value in enumerate(temp):
-            ws.cell(row=xls_str_start + row, column=ptr_cln, value=value)
-        indx += 4
-
-    indx = 2
-
-    for j in range(1, num_states + 1):
-        ptr_cln = indx + xls_cln_start
-        temp[:] = mS21[j - 1][:]
-        for row, value in enumerate(temp):
-            ws.cell(row=xls_str_start + row, column=ptr_cln, value=value)
-        indx += 4
-
-    indx = 3
-
-    for j in range(1, num_states + 1):
-        ptr_cln = indx + xls_cln_start
-        temp[:] = pS21[j - 1][:]
-        for row, value in enumerate(temp):
-            ws.cell(row=xls_str_start + row, column=ptr_cln, value=value)
-        indx += 4
-
-    temp = [0] * 3
-    indx = 0
-
-    for j in range(1, num_states + 1):
-        ptr_cln1 = indx + xls_cln_start
-        ptr_cln2 = indx + xls_cln_start + 2
-        temp[1] = s21_max[j]
-        temp[2] = s21_min[j]
-        temp[3] = delta_s21[j]
-        for col, value in enumerate(temp):
-            ws.cell(row=xls_str_start - 3, column=ptr_cln1 + col, value=value)
-        indx += 4
-
-    data2str = delta_Kp
-    ptr_cln = 2
-    ws.cell(row=xls_str_start - 3, column=ptr_cln, value=delta_Kp)
-
-    wb.save(file_path)
-
-    print('data saved to:', file_path)
 
 
 def get_measurement(pna, calc, param):
@@ -269,12 +191,6 @@ def reset_commutator(jerome):
     jerome.close()
 
 
-def calc_gammas(mag_s11_arr, mag_s22_arr):
-    gamma_inp = [VSWR_calc(dataset) for dataset in mag_s11_arr]
-    gamma_outp = [VSWR_calc(dataset) for dataset in mag_s22_arr]
-    return gamma_inp, gamma_outp
-
-
 def find_freq_index(freqs: list, threshold):
     df = freqs[1] - freqs[0]
     return next((i for i, f in enumerate(freqs) if (threshold - df) < f < (threshold + df)), 0)
@@ -309,8 +225,6 @@ def ref_pts_stats(gamma_inp, ind_dn_frq, ind_up_frq, eps, threshold):
 
 def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
-    file_name = '.\\xlsx\\out.xlsx'
-
     jerome, pna = prepare_rig(pna_addr)
 
     freqs = get_freqs(pna)
@@ -318,9 +232,8 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     close_rig(jerome, pna)
 
-    gamma_inp, gamma_outp = calc_gammas(mag_s11_arr, mag_s22_arr)
-
-    # init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    gamma_inp = [VSWR_calc(mags) for mags in mag_s11_arr]
+    gamma_outp = [VSWR_calc(mags) for mags in mag_s22_arr]
 
     ind_dn_frq = find_freq_index(freqs, threshold=1.21e9)
     ind_up_frq = find_freq_index(freqs, threshold=1.31e9)
@@ -337,18 +250,13 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     ref_pnt_inp = ref_pts_stats(gamma_inp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
     ref_pnt_outp = ref_pts_stats(gamma_outp, ind_dn_frq, ind_up_frq, eps=1e-1, threshold=1.5)
 
-    summ_inp = [sum(pts) for pts in ref_pnt_inp]
-    summ_outp = [sum(pts) for pts in ref_pnt_outp]
+    summ_inp = sum([sum(pts) for pts in ref_pnt_inp])
+    summ_outp = sum([sum(pts) for pts in ref_pnt_outp])
 
-    if sum(summ_inp) == 0:
-        print('WSVR in < 1.5')
-    else:
-        print('!!! WSVR in > 1.5 !!!')
+    print('VSWR in < 1.5') if summ_inp == 0 else print('warning: VSWR in > 1.5')
+    print('VSWR out < 1.5') if summ_outp == 0 else print('warning: VSWR out > 1.5')
 
-    if sum(summ_outp) == 0:
-        print('WSVR out < 1.5')
-    else:
-        print('!!! WS?VR out > 1.5 !!!')
+    save_xlsx(freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
 
 def prepare_rig(pna_addr):
