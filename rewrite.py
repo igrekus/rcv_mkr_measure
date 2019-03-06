@@ -246,23 +246,21 @@ def get_phase_value(pattern):
     return sum([v * p for v, p in zip(phases, pattern)])
 
 
+def measure_s_params(index, pna, jerome):
     mag_s11_arr = list()
     mag_s22_arr = list()
     mag_s21_arr = list()
     phs_s21_arr = list()
     st_arr = list()
     for i in index:
-        receiver_control('bit5', bit_state[i][0][0], serial_obj=ser)
-        receiver_control('bit6', bit_state[i][0][1], serial_obj=ser)
-        receiver_control('bit3', bit_state[i][0][2], serial_obj=ser)
-        receiver_control('bit4', bit_state[i][0][3], serial_obj=ser)
+        st_arr.append(get_phase_value(bit_states[i]))  # phs_state
 
-        st_arr.append(bit_state[i][1])  # phs_state
+        jerome_set_bit_pattern(bit_states[i], jerome=jerome)
+        mag_s21_arr.append(get_measurement(pna=pna, calc=1, param='CH1_S21'))
+        phs_s21_arr.append(get_measurement(pna=pna, calc=2, param='CH2_S21'))
+        mag_s11_arr.append(get_measurement(pna=pna, calc=1, param='CH1_S11'))
+        mag_s22_arr.append(get_measurement(pna=pna, calc=1, param='CH1_S22'))
 
-        mag_s21_arr.append(get_param(pna=pna, calc=1, param='CH1_S21'))
-        phs_s21_arr.append(get_param(pna=pna, calc=2, param='CH2_S21'))
-        mag_s11_arr.append(get_param(pna=pna, calc=1, param='CH1_S11'))
-        mag_s22_arr.append(get_param(pna=pna, calc=1, param='CH1_S22'))
     return mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr
 
 
