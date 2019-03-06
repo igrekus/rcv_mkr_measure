@@ -312,8 +312,8 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     close_rig(jerome, pna)
 
-    gamma_inp = [VSWR_calc(dataset) for dataset in mag_s11_arr]
-    gamma_outp = [VSWR_calc(dataset) for dataset in mag_s22_arr]
+    gamma_inp = [VSWR_calc(mags) for mags in mag_s11_arr]
+    gamma_outp = [VSWR_calc(mags) for mags in mag_s22_arr]
 
     # init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
