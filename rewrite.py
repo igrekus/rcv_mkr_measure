@@ -232,7 +232,7 @@ def save_file(file_path, freq, gamma_inp, gamma_outp, mS21, pS21, s21_min, s21_m
     print('data saved to:', file_path)
 
 
-def get_param(pna, calc, param):
+def get_measurement(pna, calc, param):
     return pna.query(f'CALC{calc}:PAR:SEL "{param}";CALC{calc}:DATA? FDATA')
 
 
