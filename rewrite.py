@@ -108,7 +108,7 @@ def VSWR_calc(inp_S: list):
     return list(outp_G)
 
 
-def init_file(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
+def save_xlsx(file_path, freq, states, gamma_inp, gamma_outp, mS21, pS21):
 
     first_16_nonzero_elem_indices = [idx for idx, x in enumerate(states) if x != 0]
 
@@ -265,7 +265,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     print('VSWR in < 1.5') if summ_inp == 0 else print('warning: VSWR in > 1.5')
     print('VSWR out < 1.5') if summ_outp == 0 else print('warning: VSWR out > 1.5')
 
-    init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
+    save_xlsx(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
 
 def prepare_rig(pna_addr):
