@@ -244,8 +244,6 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     gamma_inp = [VSWR_calc(mags) for mags in mag_s11_arr]
     gamma_outp = [VSWR_calc(mags) for mags in mag_s22_arr]
 
-    # init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
-
     ind_dn_frq = find_freq_index(freqs, threshold=1.21e9)
     ind_up_frq = find_freq_index(freqs, threshold=1.31e9)
 
@@ -273,6 +271,8 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
         print('WSVR out < 1.5')
     else:
         print('!!! WS?VR out > 1.5 !!!')
+
+    init_file(file_name, freqs, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr)
 
 
 def prepare_rig(pna_addr):
