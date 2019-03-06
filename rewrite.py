@@ -246,16 +246,16 @@ def get_phase_value(pattern):
     return sum([v * p for v, p in zip(phases, pattern)])
 
 
-def measure_s_params(index, pna, jerome):
+def measure_s_params(pna, jerome):
     mag_s11_arr = list()
     mag_s22_arr = list()
     mag_s21_arr = list()
     phs_s21_arr = list()
     st_arr = list()
-    for i in index:
-        st_arr.append(get_phase_value(bit_states[i]))  # phs_state
+    for state in bit_states.values():
+        st_arr.append(get_phase_value(state))  # phs_state
 
-        jerome_set_bit_pattern(bit_states[i], jerome=jerome)
+        jerome_set_bit_pattern(state, jerome=jerome)
         mag_s21_arr.append(get_measurement(pna=pna, calc=1, param='CH1_S21'))
         phs_s21_arr.append(get_measurement(pna=pna, calc=2, param='CH2_S21'))
         mag_s11_arr.append(get_measurement(pna=pna, calc=1, param='CH1_S11'))
@@ -327,7 +327,7 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     freqs = get_freqs(pna)
 
-    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(index, pna, jerome)
+    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(pna, jerome)
 
     pna.close()
     reset_commutator(jerome)
