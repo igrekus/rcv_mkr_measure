@@ -323,8 +323,6 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     jerome_init(jerome)
     pna_init(pna)
 
-    index = list(bit_states.keys())
-
     freqs = get_freqs(pna)
 
     mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(pna, jerome)
