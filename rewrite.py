@@ -280,28 +280,18 @@ def find_freq_index(freqs: list, threshold):
     return next((i for i, f in enumerate(freqs) if (threshold - df) < f < (threshold + df)), 0)
 
 
-def find_down_freq_index(df, frq, num_pts, threshold):
-    ind_dn_frq = 0
-    for i in range(num_pts):
-        if (threshold - df) < frq[i] < (threshold + df):
-            ind_dn_frq = i
-    return ind_dn_frq
-
-
-def calc_s21_stats(ind_dn_frq, ind_up_frq, index, mag_s21_arr, st_arr):
+def calc_s21_stats(ind_dn_frq, ind_up_frq, mag_s21_arr):
     s21_max = list()
     s21_min = list()
     delta_s21 = list()
-    for j in index:
-        temp = mag_s21_arr[j][ind_dn_frq:ind_up_frq]
-        s21_max.append(max(temp))
-        s21_min.append(min(temp))
-        delta_s21.append(s21_max[j] - s21_min[j])
 
-        print('phase:', st_arr[j])
-        print('s21_max=', s21_max[j])
-        print('s21_min=', s21_min[j])
-        print('delta_s21=', delta_s21[j])
+    for data in mag_s21_arr:
+        temp = data[ind_dn_frq:ind_up_frq + 1]
+        mx, mn = max(temp), min(temp)
+        s21_max.append(mx)
+        s21_min.append(mn)
+        delta_s21.append(mx - mn)
+
     return s21_max, s21_min, delta_s21
 
 
