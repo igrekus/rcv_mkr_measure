@@ -314,11 +314,9 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
     jerome, pna = prepare_rig(pna_addr)
 
     freqs = get_freqs(pna)
-
     mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = measure_s_params(pna, jerome)
 
-    pna.close()
-    reset_commutator(jerome)
+    close_rig(jerome, pna)
 
     gamma_inp, gamma_outp = calc_gammas(mag_s11_arr, mag_s22_arr)
 
@@ -409,6 +407,11 @@ def find_pna(pna_addr):
         return inst
 
     return None
+
+
+def close_rig(jerome, pna):
+    pna.close()
+    reset_commutator(jerome)
 
 
 if __name__ == '__main__':
