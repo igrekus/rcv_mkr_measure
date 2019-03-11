@@ -175,10 +175,10 @@ for i = 1:length(index)% i = [1..16]
             delete(pna);
             clear pna;
 
-            receiver_control('bit3', 1);
-            receiver_control('bit4', 1);
             receiver_control('bit5', 1);
             receiver_control('bit6', 1);
+            receiver_control('bit3', 1);
+            receiver_control('bit4', 1);
 
             for i = 1:length(index)
                 gamma_inp(i, :) = VSWR_calc(mag_s11_arr(i, :));
