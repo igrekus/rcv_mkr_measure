@@ -63,7 +63,7 @@ class InstrumentController:
         else:
             # TODO extract project-specific logic and result validation here
             self._jerome.mkr_init()
-            self._pna.mkr_init()
+            self.mkr_init()
             print('\n-- instruments ready --\n')
         return True
 
@@ -90,18 +90,55 @@ class InstrumentController:
             self._jerome.mkr_set_bit_pattern(state)
 
             # TODO extract measurement class
-            self._mag_s21s.append(parse_float_list(self._pna.mkr_read_measurement(chan=1, parameter='CH1_S21')))
-            self._phs_s21s.append(parse_float_list(self._pna.mkr_read_measurement(chan=2, parameter='CH2_S21')))
-            self._mag_s11s.append(parse_float_list(self._pna.mkr_read_measurement(chan=1, parameter='CH1_S11')))
-            self._mag_s22s.append(parse_float_list(self._pna.mkr_read_measurement(chan=1, parameter='CH1_S22')))
+            self._mag_s21s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S21')))
+            self._phs_s21s.append(parse_float_list(self.mkr_read_measurement(chan=2, parameter='CH2_S21')))
+            self._mag_s11s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S11')))
+            self._mag_s22s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S22')))
 
     def _phase_for_state(self, pattern):
         return sum([ph * pt for ph, pt in zip(self.phases, pattern)])
 
+    def mkr_read_measurement(self, chan=1, parameter=''):
+        return self._pna.query(f'CALC{chan}:PAR:SEL "{parameter}";CALC{chan}:DATA? FDATA')
+
+    def mkr_read_freqs(self, chan=1, parameter=''):
+        return self._pna.query(f'CALC{chan}:PAR:SEL "{parameter}";SENS{chan}:X?')
+
+    def mkr_init(self):
+        self._pna.send('SYST:PRES')
+        self._pna.query('*OPC?')
+        self._pna.send('CALC:PAR:DEL:ALL')
+
+        self._pna.send('DISP:WIND2 ON')
+
+        self._pna.send('CALC1:PAR:DEF "CH1_S21",S21')
+        self._pna.send('CALC2:PAR:DEF "CH2_S21",S21')
+        self._pna.send('CALC1:PAR:DEF "CH1_S11",S11')
+        self._pna.send('CALC1:PAR:DEF "CH1_S22",S22')
+
+        self._pna.send('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
+        self._pna.send('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
+
+        self._pna.send('DISP:WIND1:TRAC1:FEED "CH1_S21"')
+        self._pna.send('DISP:WIND2:TRAC1:FEED "CH2_S21"')
+        self._pna.send('DISP:WIND1:TRAC2:FEED "CH1_S11"')
+        self._pna.send('DISP:WIND1:TRAC3:FEED "CH1_S22"')
+
+        self._pna.send('SENS1:SWE:MODE CONT')
+        self._pna.send('SENS2:SWE:MODE CONT')
+
+        self._pna.send('CALC1:FORM MLOG')
+        self._pna.send('DISP:WIND1:TRAC1:Y:SCAL:AUTO')
+        self._pna.send('CALC2:FORM UPH')
+        self._pna.send('DISP:WIND2:TRAC1:Y:SCAL:AUTO')
+
+        self._pna.send(f'FORM:DATA ASCII')
+
+
     @property
     def freqs(self):
         if not self._freqs:
-            self._freqs = parse_float_list(self._pna.mkr_read_freqs(chan=1, parameter='CH1_S21'))
+            self._freqs = parse_float_list(self.mkr_read_freqs(chan=1, parameter='CH1_S21'))
         return self._freqs
 
     @property
