@@ -18,13 +18,13 @@ def ref_pts_stats(gamma_inp, ind_dn_frq, ind_up_frq):
 
 class MeasurementResult:
 
-    def __init__(self, freqs, mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr):
-        self._freqs = freqs
-        self._mag_s21s = mag_s21_arr
-        self._phs_s21s = phs_s21_arr
-        self._mag_s11s = mag_s11_arr
-        self._mag_s22s = mag_s22_arr
-        self._states = st_arr
+    def __init__(self,):
+        self._freqs = list()
+        self._mag_s21s = list()
+        self._phs_s21s = list()
+        self._mag_s11s = list()
+        self._mag_s22s = list()
+        self._states = list()
 
         self._gamma_input = list()
         self._gamma_output = list()
@@ -94,3 +94,21 @@ class MeasurementResult:
 
     def __bool__(self):
         return self.ready
+
+    @property
+    def raw_data(self):
+        return self._freqs, self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states
+
+    @raw_data.setter
+    def raw_data(self, args):
+        self._freqs, self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states = args
+
+    @property
+    def freqs(self):
+        return self._freqs
+
+    # def ready(self):
+    #     print(self._delta_Kp , self._s21_MAX , self._s21_MIN , self._avg_Kp , self._summ_inp , self._summ_outp)
+    #     print(self._delta_Kp and self._s21_MAX and self._s21_MIN and self._avg_Kp and self._summ_inp and self._summ_outp)
+    #     return self._delta_Kp and self._s21_MAX and self._s21_MIN and self._avg_Kp and self._summ_inp and self._summ_outp
+

@@ -167,7 +167,7 @@ class InstrumentController:
 
     @property
     def measurements(self):
-        return self.mag_s21s, self.phs_s21s, self.mag_s11s, self.mag_s22s, self.phase_values
+        return self.freqs, self.mag_s21s, self.phs_s21s, self.mag_s11s, self.mag_s22s, self.phase_values
 
     @property
     def pna(self):

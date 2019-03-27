@@ -19,7 +19,7 @@ def main():
     pna_addr = 'TCPIP0::192.168.0.102::inst0::INSTR'
 
     instrs = InstrumentController(pna_address=pna_addr)
-    result = MeasurementResult(list(), list(), list(), list(), list(), list())
+    result = MeasurementResult()
 
     # io = imgui.get_io()
     # font_new = io.fonts.add_font_from_file_ttf("segoeuil.ttf", 20)
@@ -91,7 +91,7 @@ def main():
 
         if measure_clicked:
             instrs.measure()
-            result.ready = True
+            result.raw_data = instrs.measurements
 
         if export_clicked:
             print('export')
