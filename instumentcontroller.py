@@ -51,8 +51,6 @@ class InstrumentController:
         self._phs_s21s = list()
         self._phase_values = list()
 
-        self._prepare_rig()
-
     def _prepare_rig(self, ):
         if not self._find_rig():
             if not self._jerome:
@@ -79,10 +77,6 @@ class InstrumentController:
             self._pna = AgilentE8362B.try_find()
         return self._jerome and self._pna
 
-    def close_rig(self):
-        self._pna.close()
-        self._jerome.mkr_reset()
-
     def _measure_s_params(self):
         for state in self.bit_states.values():
             self._phase_values.append(self._phase_for_state(state))
@@ -97,6 +91,18 @@ class InstrumentController:
 
     def _phase_for_state(self, pattern):
         return sum([ph * pt for ph, pt in zip(self.phases, pattern)])
+
+    # public API
+    def connect(self):
+        self._prepare_rig()
+
+    def disconnect(self):
+        self._pna.close()
+        self._jerome.mkr_reset()
+
+    def measure(self):
+        self._freqs = parse_float_list(self.mkr_read_freqs(chan=1, parameter='CH1_S21'))
+        self._measure_s_params()
 
     def mkr_read_measurement(self, chan=1, parameter=''):
         return self._pna.query(f'CALC{chan}:PAR:SEL "{parameter}";CALC{chan}:DATA? FDATA')
@@ -137,40 +143,40 @@ class InstrumentController:
 
     @property
     def freqs(self):
-        if not self._freqs:
-            self._freqs = parse_float_list(self.mkr_read_freqs(chan=1, parameter='CH1_S21'))
         return self._freqs
 
     @property
     def mag_s21s(self):
-        if not self._mag_s21s:
-            self._measure_s_params()
         return self._mag_s21s
 
     @property
     def phs_s21s(self):
-        if not self._phs_s21s:
-            self._measure_s_params()
         return self._phs_s21s
 
     @property
     def mag_s11s(self):
-        if not self._mag_s11s:
-            self._measure_s_params()
         return self._mag_s11s
 
     @property
     def mag_s22s(self):
-        if not self._mag_s22s:
-            self._measure_s_params()
         return self._mag_s22s
 
     @property
     def phase_values(self):
-        if not self._phase_values:
-            self._measure_s_params()
         return self._phase_values
 
     @property
     def measurements(self):
         return self.mag_s21s, self.phs_s21s, self.mag_s11s, self.mag_s22s, self.phase_values
+
+    @property
+    def pna(self):
+        return str(self._pna)
+
+    @property
+    def jerome(self):
+        return str(self._jerome)
+
+    @property
+    def connected(self):
+        return self._pna and self._jerome

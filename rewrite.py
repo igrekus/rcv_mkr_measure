@@ -8,11 +8,12 @@ from measurementresult import MeasurementResult
 def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
     instrs = InstrumentController(pna_address=pna_addr)
+    instrs.connect()
 
     freqs = instrs.freqs
     mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = instrs.measurements
 
-    instrs.close_rig()
+    instrs.disconnect()
 
     result = MeasurementResult(freqs, mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr)
     result.process()
