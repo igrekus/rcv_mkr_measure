@@ -49,6 +49,7 @@ class MeasurementResult:
         self._summ_outp = list()
 
         self.ready = False
+        self._raw_data_set = dict()
 
     def process(self):
         self._calc_gammas()
@@ -57,6 +58,38 @@ class MeasurementResult:
         self._calc_out_params()
         self._calc_ref_points()
         self._calc_out_stats()
+
+    def invaliadte(self):
+        self._clear()
+        self._raw_data_set.clear()
+
+    def _clear(self):
+        self._freqs.clear()
+        self._mag_s21s.clear()
+        self._phs_s21s.clear()
+        self._mag_s11s.clear()
+        self._mag_s22s.clear()
+        self._states.clear()
+
+        self._gamma_input.clear()
+        self._gamma_output.clear()
+
+        self._low_index = 0
+        self._high_index = 0
+
+        self._s21_maxs.clear()
+        self._s21_mins.clear()
+
+        self._delta_Kp = 0.0
+        self._s21_MAX = 0.0
+        self._s21_MIN = 0.0
+        self._avg_Kp = 0.0
+
+        self._ref_pnt_inp.clear()
+        self._ref_pnt_outp.clear()
+
+        self._summ_inp.clear()
+        self._summ_outp.clear()
 
     def _calc_gammas(self):
         self._gamma_input = [calc_vswr(mags) for mags in self._mag_s11s]
@@ -102,6 +135,8 @@ class MeasurementResult:
     @raw_data.setter
     def raw_data(self, args):
         self._freqs, self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states = args
+        self._raw_data_set = {state: dataset for state, dataset in zip(self._states, zip(self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s))}
+            # list(zip(self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states))
 
     @property
     def freqs(self):
@@ -109,7 +144,8 @@ class MeasurementResult:
 
     @property
     def datasets(self):
-        return zip(self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states)
+        return self._raw_data_set
+        # return zip(self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states)
 
     # def ready(self):
     #     print(self._delta_Kp , self._s21_MAX , self._s21_MIN , self._avg_Kp , self._summ_inp , self._summ_outp)

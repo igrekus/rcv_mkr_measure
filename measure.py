@@ -25,6 +25,8 @@ def main():
     # font_new = io.fonts.add_font_from_file_ttf("segoeuil.ttf", 20)
     # impl.refresh_font_texture()
 
+    current_raw_state = 0
+
     while not glfw.window_should_close(window):
         glfw.poll_events()
         impl.process_inputs()
@@ -84,7 +86,9 @@ def main():
 
         imgui.begin('Raw data', False)
 
-        imgui.columns(6, 'freqs')
+        _, current_raw_state = imgui.combo('States', current_raw_state, list(map(str, result._states)))
+
+        imgui.columns(6, border=False)
         imgui.separator()
         imgui.text('#')
         imgui.next_column()
@@ -98,14 +102,12 @@ def main():
         imgui.next_column()
         imgui.text('S22_mag')
         imgui.next_column()
+        imgui.columns(1)
 
-        for s21_mags, s21_phs, s11_mags, s22_mags, state in result.datasets:
-            imgui.columns(1)
-            imgui.separator()
-            imgui.text(f'state={state}')
-            imgui.separator()
-            imgui.columns(6)
-
+        if result.datasets:
+            imgui.begin_child('RawScrollRegion', 0.0, 0.0, False)
+            imgui.columns(6, border=False)
+            s21_mags, s21_phs, s11_mags, s22_mags = result.datasets[list(result.datasets)[current_raw_state]]
             for index, frq in enumerate(result._freqs):
                 imgui.text(str(index + 1))
                 imgui.next_column()
@@ -119,6 +121,7 @@ def main():
                 imgui.next_column()
                 imgui.text(str(s22_mags[index]))
                 imgui.next_column()
+            imgui.end_child()
 
         imgui.columns(1)
         imgui.end()
@@ -126,11 +129,12 @@ def main():
         imgui.set_next_window_position(50, 200, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
 
-        imgui.begin('Stats', False)
-
-
+        imgui.begin('Stats', False, 0)
 
         imgui.end()
+
+        imgui.show_metrics_window()
+        # imgui.show_demo_window()
 
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
@@ -143,8 +147,10 @@ def main():
             instrs.connect()
 
         if measure_clicked:
+            result.invaliadte()
             instrs.measure()
             result.raw_data = instrs.measurements
+            result.process()
 
         if export_clicked:
             print('export')
