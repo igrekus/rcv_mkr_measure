@@ -107,6 +107,10 @@ class MeasurementResult:
     def freqs(self):
         return self._freqs
 
+    @property
+    def datasets(self):
+        return zip(self._mag_s21s, self._phs_s21s, self._mag_s11s, self._mag_s22s, self._states)
+
     # def ready(self):
     #     print(self._delta_Kp , self._s21_MAX , self._s21_MIN , self._avg_Kp , self._summ_inp , self._summ_outp)
     #     print(self._delta_Kp and self._s21_MAX and self._s21_MIN and self._avg_Kp and self._summ_inp and self._summ_outp)

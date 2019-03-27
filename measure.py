@@ -45,7 +45,7 @@ def main():
 
             imgui.end_main_menu_bar()
 
-        imgui.begin('Instruments', True, imgui.WINDOW_NO_COLLAPSE)
+        imgui.begin('Instruments', False, imgui.WINDOW_NO_COLLAPSE)
 
         _, pna_addr = imgui.input_text('PNA address', pna_addr, 50)
         _ = imgui.input_text('PNA', instrs.pna, 50)
@@ -76,6 +76,59 @@ def main():
 
         if not result:
             imgui.pop_style_color(3)
+
+        imgui.end()
+
+        imgui.set_next_window_position(500, 50, imgui.ONCE)
+        imgui.set_next_window_size(500, 500, imgui.ONCE)
+
+        imgui.begin('Raw data', False)
+
+        imgui.columns(6, 'freqs')
+        imgui.separator()
+        imgui.text('#')
+        imgui.next_column()
+        imgui.text('F')
+        imgui.next_column()
+        imgui.text('S21_mag')
+        imgui.next_column()
+        imgui.text('S21_phs')
+        imgui.next_column()
+        imgui.text('S11_mag')
+        imgui.next_column()
+        imgui.text('S22_mag')
+        imgui.next_column()
+
+        for s21_mags, s21_phs, s11_mags, s22_mags, state in result.datasets:
+            imgui.columns(1)
+            imgui.separator()
+            imgui.text(f'state={state}')
+            imgui.separator()
+            imgui.columns(6)
+
+            for index, frq in enumerate(result._freqs):
+                imgui.text(str(index + 1))
+                imgui.next_column()
+                imgui.text(str(frq))
+                imgui.next_column()
+                imgui.text(str(s21_mags[index]))
+                imgui.next_column()
+                imgui.text(str(s21_phs[index]))
+                imgui.next_column()
+                imgui.text(str(s11_mags[index]))
+                imgui.next_column()
+                imgui.text(str(s22_mags[index]))
+                imgui.next_column()
+
+        imgui.columns(1)
+        imgui.end()
+
+        imgui.set_next_window_position(50, 200, imgui.ONCE)
+        imgui.set_next_window_size(500, 500, imgui.ONCE)
+
+        imgui.begin('Stats', False)
+
+
 
         imgui.end()
 
