@@ -48,6 +48,8 @@ class MeasurementResult:
         self._summ_inp = list()
         self._summ_outp = list()
 
+        self.ready = False
+
     def process(self):
         self._calc_gammas()
         self._find_freqs()
@@ -89,3 +91,6 @@ class MeasurementResult:
     def _calc_out_stats(self):
         self._summ_inp = sum([sum(pts) for pts in self._ref_pnt_inp])
         self._summ_outp = sum([sum(pts) for pts in self._ref_pnt_outp])
+
+    def __bool__(self):
+        return self.ready
