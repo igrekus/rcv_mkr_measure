@@ -51,6 +51,14 @@ class InstrumentController:
         self._phs_s21s = list()
         self._phase_values = list()
 
+    def _clear(self):
+        self._freqs = list()
+        self._mag_s11s = list()
+        self._mag_s22s = list()
+        self._mag_s21s = list()
+        self._phs_s21s = list()
+        self._phase_values = list()
+
     def _prepare_rig(self, ):
         if not self._find_rig():
             if not self._jerome:
@@ -101,6 +109,7 @@ class InstrumentController:
         self._jerome.mkr_reset()
 
     def measure(self):
+        self._clear()
         self._freqs = parse_float_list(self.mkr_read_freqs(chan=1, parameter='CH1_S21'))
         self._measure_s_params()
 
