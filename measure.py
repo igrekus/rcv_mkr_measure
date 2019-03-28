@@ -1,13 +1,19 @@
-import sys
+import matplotlib
+matplotlib.use('TkAgg')
+from matplotlib import pyplot as plot
 
 import glfw
 import OpenGL.GL as GL
 
-import imgui
+# import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
 from instumentcontroller import InstrumentController
 from measurementresult import MeasurementResult
+
+import numpy as np
+
+from imgui_datascience import *
 
 COLOR_DISABLED = (0.2, 0.2, 0.2)
 
@@ -24,6 +30,11 @@ def main():
     # io = imgui.get_io()
     # font_new = io.fonts.add_font_from_file_ttf("segoeuil.ttf", 20)
     # impl.refresh_font_texture()
+
+    figure = plot.figure()
+    x = np.arange(0.1, 100, 0.1)
+    y = np.sin(x) / x
+    plot.plot(x, y)
 
     current_raw_state = 0
 
@@ -129,12 +140,30 @@ def main():
         imgui.set_next_window_position(50, 200, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
 
-        imgui.begin('Stats', False, 0)
+        # imgui.begin('Stats', False, 0)
+        #
+        # imgui.end()
 
-        imgui.end()
+        # imgui.begin('S21/f')
+
+        if result.datasets:
+            imgui.begin('Plots')
+
+            img = np.array([result._freqs, s21_mags], dtype=np.float64)
+
+            imgui_fig.fig(figure, 500, 500, 'S21')
+
+            imgui.end()
+
+        # imgui.end()
 
         imgui.show_metrics_window()
         # imgui.show_demo_window()
+        # 1st plot - freq x swr_in
+        # 2nd plot - freq x s21_mag
+        # 3rd plot - freq x swr_out
+        # 4th plot - freq x phase
+        # 5th plot - freq x ph_err
 
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
