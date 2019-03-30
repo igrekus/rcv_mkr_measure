@@ -59,7 +59,7 @@ class MeasurementResult:
         self._calc_ref_points()
         self._calc_out_stats()
 
-    def invaliadte(self):
+    def invalidate(self):
         self._clear()
         self._raw_data_set.clear()
 

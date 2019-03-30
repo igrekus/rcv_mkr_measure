@@ -159,7 +159,7 @@ def main():
             instrs.connect()
 
         if ui.clicked_measure:
-            result.invaliadte()
+            result.invalidate()
             instrs.measure()
             result.raw_data = instrs.measurements
             result.process()
