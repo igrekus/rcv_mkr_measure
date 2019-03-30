@@ -1,4 +1,6 @@
 import matplotlib
+from attr import attrs, attrib
+
 matplotlib.use('TkAgg')
 from matplotlib import pyplot as plot
 
@@ -18,12 +20,21 @@ from imgui_datascience import *
 COLOR_DISABLED = (0.2, 0.2, 0.2)
 
 
+@attrs
+class UiState:
+    clicked_quit = attrib(default=False)
+    clicked_connect = attrib(default=False)
+    clicked_measure = attrib(default=False)
+    clicked_export = attrib(default=False)
+
+
 def main():
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
 
     pna_addr = 'TCPIP0::192.168.0.102::inst0::INSTR'
 
+    ui = UiState()
     instrs = InstrumentController(pna_address=pna_addr)
     result = MeasurementResult()
 
@@ -44,51 +55,23 @@ def main():
 
         imgui.new_frame()
 
-        if imgui.begin_main_menu_bar():
-            if imgui.begin_menu('File', True):
-
-                clicked_quit, selected_quit = imgui.menu_item(
-                    'Quit', 'Ctrl+Q', False, True
-                )
-
-                if clicked_quit:
-                    exit(10)
-
-                imgui.end_menu()
-
-            imgui.end_main_menu_bar()
+        ui.clicked_quit, _ = draw_main_menu()
 
         imgui.begin('Instruments', False, imgui.WINDOW_NO_COLLAPSE)
 
         _, pna_addr = imgui.input_text('PNA address', pna_addr, 50)
-        _ = imgui.input_text('PNA', instrs.pna, 50)
-        _ = imgui.input_text('Jerome', instrs.jerome, 50)
+        imgui.input_text('PNA', instrs.pna, 50)
+        imgui.input_text('Jerome', instrs.jerome, 50)
 
-        connect_clicked = imgui.button('Connect')
-        imgui.same_line()
+        ui.clicked_connect = imgui.button('Connect')
 
-        if not instrs.connected:
-            imgui.push_style_color(imgui.COLOR_BUTTON, *COLOR_DISABLED)
-            imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, *COLOR_DISABLED)
-            imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, *COLOR_DISABLED)
+        if instrs.connected:
+            imgui.same_line()
+            ui.clicked_measure = imgui.button('Measure')
 
-        measure_clicked = imgui.button('Measure')
-        measure_clicked = measure_clicked and instrs.connected
-
-        if not instrs.connected:
-            imgui.pop_style_color(3)
-
-        if not result:
-            imgui.push_style_color(imgui.COLOR_BUTTON, *COLOR_DISABLED)
-            imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, *COLOR_DISABLED)
-            imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, *COLOR_DISABLED)
-
-        imgui.same_line()
-        export_clicked = imgui.button('Export')
-        export_clicked = export_clicked and result
-
-        if not result:
-            imgui.pop_style_color(3)
+        if result:
+            imgui.same_line()
+            ui.clicked_export = imgui.button('Export')
 
         imgui.end()
 
@@ -172,20 +155,43 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-        if connect_clicked:
+        if ui.clicked_connect:
             instrs.connect()
 
-        if measure_clicked:
+        if ui.clicked_measure:
             result.invaliadte()
             instrs.measure()
             result.raw_data = instrs.measurements
             result.process()
 
-        if export_clicked:
+        if ui.clicked_export:
             print('export')
+
+        if ui.clicked_quit:
+            exit(0)
 
     impl.shutdown()
     glfw.terminate()
+
+
+def draw_main_menu():
+    clicked_quit, selected_quit = False, False
+
+    if imgui.begin_main_menu_bar():
+        if imgui.begin_menu('File', True):
+
+            clicked_quit, selected_quit = imgui.menu_item(
+                'Quit', 'Ctrl+Q', False, True
+            )
+
+            if clicked_quit:
+                exit(10)
+
+            imgui.end_menu()
+
+        imgui.end_main_menu_bar()
+
+    return clicked_quit, selected_quit
 
 
 def impl_glfw_init():
