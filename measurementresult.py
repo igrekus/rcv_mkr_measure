@@ -58,10 +58,12 @@ class MeasurementResult:
         self._calc_out_params()
         self._calc_ref_points()
         self._calc_out_stats()
+        self.ready = True
 
     def invalidate(self):
         self._clear()
         self._raw_data_set.clear()
+        self.ready = False
 
     def _clear(self):
         self._freqs.clear()
