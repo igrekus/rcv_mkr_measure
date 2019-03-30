@@ -88,8 +88,8 @@ class MeasurementResult:
         self._ref_pnt_inp.clear()
         self._ref_pnt_outp.clear()
 
-        self._summ_inp.clear()
-        self._summ_outp.clear()
+        self._summ_inp = 0
+        self._summ_outp = 0
 
     def _calc_gammas(self):
         self._gamma_input = [calc_vswr(mags) for mags in self._mag_s11s]
