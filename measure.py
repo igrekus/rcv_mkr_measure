@@ -57,23 +57,7 @@ def main():
 
         ui.clicked_quit, _ = draw_main_menu()
 
-        imgui.begin('Instruments', False, imgui.WINDOW_NO_COLLAPSE)
-
-        _, pna_addr = imgui.input_text('PNA address', pna_addr, 50)
-        imgui.input_text('PNA', instrs.pna, 50)
-        imgui.input_text('Jerome', instrs.jerome, 50)
-
-        ui.clicked_connect = imgui.button('Connect')
-
-        if instrs.connected:
-            imgui.same_line()
-            ui.clicked_measure = imgui.button('Measure')
-
-        if result:
-            imgui.same_line()
-            ui.clicked_export = imgui.button('Export')
-
-        imgui.end()
+        ui.pna_addr, ui.clicked_connect, ui.clicked_measure, ui.clicked_export = draw_instruments_windows(instrs, pna_addr, result)
 
         imgui.set_next_window_position(500, 50, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
@@ -172,6 +156,25 @@ def main():
 
     impl.shutdown()
     glfw.terminate()
+
+
+def draw_instruments_windows(instrs, pna_addr, result):
+    imgui.begin('Instruments', False, imgui.WINDOW_NO_COLLAPSE)
+    _, new_addr = imgui.input_text('PNA address', pna_addr, 50)
+    imgui.input_text('PNA', instrs.pna, 50)
+    imgui.input_text('Jerome', instrs.jerome, 50)
+    clicked_connect = imgui.button('Connect')
+    clicked_measure = False
+    clicked_export = False
+    if instrs.connected:
+        imgui.same_line()
+        clicked_measure = imgui.button('Measure')
+    if result:
+        imgui.same_line()
+        clicked_export = imgui.button('Export')
+    imgui.end()
+
+    return new_addr, clicked_connect, clicked_measure, clicked_export
 
 
 def draw_main_menu():
