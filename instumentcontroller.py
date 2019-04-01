@@ -114,10 +114,14 @@ class InstrumentController:
         self._measure_s_params()
 
     def mkr_read_measurement(self, chan=1, parameter=''):
-        return self._pna.query(f'CALC{chan}:PAR:SEL "{parameter}";CALC{chan}:DATA? FDATA')
+        self._pna.send(f'CALC{chan}:PAR:SEL "{parameter}"')
+        self._pna.query('*OPC?')
+        return self._pna.query(f'CALC{chan}:DATA? FDATA')
 
     def mkr_read_freqs(self, chan=1, parameter=''):
-        return self._pna.query(f'CALC{chan}:PAR:SEL "{parameter}";SENS{chan}:X?')
+        self._pna.send(f'CALC{chan}:PAR:SEL "{parameter}"')
+        self._pna.query(f'*OPC?')
+        return self._pna.query(f'SENS{chan}:X?')
 
     def mkr_init(self):
         self._pna.send('SYST:PRES')
