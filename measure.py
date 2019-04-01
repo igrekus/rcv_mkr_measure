@@ -1,21 +1,20 @@
 import matplotlib
-from attr import attrs, attrib
-
 matplotlib.use('TkAgg')
+
 from matplotlib import pyplot as plot
+from matplotlib.figure import Figure
 
 import glfw
 import OpenGL.GL as GL
-
-# import imgui
 from imgui.integrations.glfw import GlfwRenderer
+from imgui_datascience import *
+
+from attr import attrs, attrib
+import numpy as np
 
 from instumentcontroller import InstrumentController
 from measurementresult import MeasurementResult
 
-import numpy as np
-
-from imgui_datascience import *
 
 @attrs
 class UiState:
