@@ -38,12 +38,11 @@ def main():
     # font_new = io.fonts.add_font_from_file_ttf("segoeuil.ttf", 20)
     # impl.refresh_font_texture()
 
-    figure = plot.figure()
-    x = np.arange(0.1, 100, 0.1)
-    y = np.sin(x) / x
-    plot.plot(x, y)
+    figure: Figure = plot.figure()
 
     current_raw_state = 0
+
+    plots_ready = False
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -60,7 +59,7 @@ def main():
         imgui.set_next_window_position(50, 200, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
 
-        if result:
+        if plots_ready:
             imgui.begin('Plots')
 
             imgui_fig.fig(figure, 500, 500, 'S21')
@@ -92,6 +91,12 @@ def main():
             instrs.measure()
             result.raw_data = instrs.measurements
             result.process()
+
+            figure.clear()
+            for ys in result._mag_s21s:
+                figure.gca().plot(result.freqs, ys)
+
+            plots_ready = True
 
         if ui.clicked_export:
             print('export')
