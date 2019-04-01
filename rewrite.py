@@ -5,7 +5,7 @@ from instumentcontroller import InstrumentController
 from measurementresult import MeasurementResult
 
 
-def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
+def measure(pna_addr='GPIB1::10::INSTR'):
 
     instrs = InstrumentController(pna_address=pna_addr)
     instrs.connect()
@@ -32,4 +32,4 @@ def measure(pna_addr='TCPIP0::192.168.1.61::inst0::INSTR'):
 
 
 if __name__ == '__main__':
-    measure(pna_addr=sys.argv[1])
+    measure()
