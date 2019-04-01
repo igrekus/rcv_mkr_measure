@@ -64,7 +64,7 @@ def main():
         imgui.set_next_window_position(50, 200, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
 
-        # imgui.begin('Stats', False, 0)
+        if result:
             imgui.begin('Plots')
 
             imgui_fig.fig(figure, 500, 500, 'S21')
