@@ -67,15 +67,13 @@ def main():
         # imgui.begin('Stats', False, 0)
             imgui.begin('Plots')
 
-            img = np.array([result._freqs, s21_mags], dtype=np.float64)
-
             imgui_fig.fig(figure, 500, 500, 'S21')
 
             imgui.end()
 
         # imgui.end()
 
-        imgui.show_metrics_window()
+        # imgui.show_metrics_window()
         # imgui.show_demo_window()
         # 1st plot - freq x swr_in
         # 2nd plot - freq x s21_mag
