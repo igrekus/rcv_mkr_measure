@@ -9,13 +9,11 @@ def measure(pna_addr='GPIB1::10::INSTR'):
 
     instrs = InstrumentController(pna_address=pna_addr)
     instrs.connect()
-
-    freqs = instrs.freqs
-    mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr = instrs.measurements
-
+    instrs.measure()
     instrs.disconnect()
 
-    result = MeasurementResult(freqs, mag_s21_arr, phs_s21_arr, mag_s11_arr, mag_s22_arr, st_arr)
+    result = MeasurementResult()
+    result.raw_data = instrs.measurements
     result.process()
 
     print('delta Kp=', result._delta_Kp)
@@ -27,7 +25,7 @@ def measure(pna_addr='GPIB1::10::INSTR'):
     print('VSWR in < 1.5') if result._summ_inp == 0 else print('warning: VSWR in > 1.5')
     print('VSWR out < 1.5') if result._summ_outp == 0 else print('warning: VSWR out > 1.5')
 
-    xlsx = ExcelResult(freqs, st_arr, result._gamma_input, result._gamma_output, mag_s21_arr, phs_s21_arr)
+    xlsx = ExcelResult(result.freqs, result._states, result._gamma_input, result._gamma_output, result._mag_s21s, result._phs_s21s)
     xlsx.save()
 
 
