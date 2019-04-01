@@ -59,61 +59,12 @@ def main():
 
         ui.pna_addr, ui.clicked_connect, ui.clicked_measure, ui.clicked_export = draw_instruments_windows(instrs, pna_addr, result)
 
-        imgui.set_next_window_position(500, 50, imgui.ONCE)
-        imgui.set_next_window_size(500, 500, imgui.ONCE)
-
-        imgui.begin('Raw data', False)
-
-        _, current_raw_state = imgui.combo('States', current_raw_state, list(map(str, result._states)))
-
-        imgui.columns(6, border=False)
-        imgui.separator()
-        imgui.text('#')
-        imgui.next_column()
-        imgui.text('F')
-        imgui.next_column()
-        imgui.text('S21_mag')
-        imgui.next_column()
-        imgui.text('S21_phs')
-        imgui.next_column()
-        imgui.text('S11_mag')
-        imgui.next_column()
-        imgui.text('S22_mag')
-        imgui.next_column()
-        imgui.columns(1)
-
-        if result.datasets:
-            imgui.begin_child('RawScrollRegion', 0.0, 0.0, False)
-            imgui.columns(6, border=False)
-            s21_mags, s21_phs, s11_mags, s22_mags = result.datasets[list(result.datasets)[current_raw_state]]
-            for index, frq in enumerate(result._freqs):
-                imgui.text(str(index + 1))
-                imgui.next_column()
-                imgui.text(str(frq))
-                imgui.next_column()
-                imgui.text(str(s21_mags[index]))
-                imgui.next_column()
-                imgui.text(str(s21_phs[index]))
-                imgui.next_column()
-                imgui.text(str(s11_mags[index]))
-                imgui.next_column()
-                imgui.text(str(s22_mags[index]))
-                imgui.next_column()
-            imgui.end_child()
-
-        imgui.columns(1)
-        imgui.end()
+        draw_raw_data_window(current_raw_state, result)
 
         imgui.set_next_window_position(50, 200, imgui.ONCE)
         imgui.set_next_window_size(500, 500, imgui.ONCE)
 
         # imgui.begin('Stats', False, 0)
-        #
-        # imgui.end()
-
-        # imgui.begin('S21/f')
-
-        if result.datasets:
             imgui.begin('Plots')
 
             img = np.array([result._freqs, s21_mags], dtype=np.float64)
@@ -156,6 +107,53 @@ def main():
 
     impl.shutdown()
     glfw.terminate()
+
+
+def draw_raw_data_window(current_raw_state, result):
+    imgui.set_next_window_position(500, 50, imgui.ONCE)
+    imgui.set_next_window_size(500, 500, imgui.ONCE)
+    imgui.begin('Raw data', False)
+    _, current_raw_state = imgui.combo('States', current_raw_state, list(map(str, result._states)))
+    imgui.columns(6, border=False)
+    imgui.separator()
+    imgui.text('#')
+    imgui.next_column()
+    imgui.text('F')
+    imgui.next_column()
+    imgui.text('S21_mag')
+    imgui.next_column()
+    imgui.text('S21_phs')
+    imgui.next_column()
+    imgui.text('S11_mag')
+    imgui.next_column()
+    imgui.text('S22_mag')
+    imgui.next_column()
+    imgui.columns(1)
+    if result:
+        draw_table(result.freqs, result.datasets[list(result.datasets)[current_raw_state]], 5)
+    imgui.end()
+    return current_raw_state
+
+
+def draw_table(freqs, dataset, cols):
+    s21_mags, s21_phs, s11_mags, s22_mags = dataset
+    imgui.begin_child('RawScrollRegion', 0.0, 0.0, False)
+    imgui.columns(cols + 1, border=False)
+    for index, frq in enumerate(freqs):
+        imgui.text(str(index + 1))
+        imgui.next_column()
+        imgui.text(str(frq))
+        imgui.next_column()
+        imgui.text(str(s21_mags[index]))
+        imgui.next_column()
+        imgui.text(str(s21_phs[index]))
+        imgui.next_column()
+        imgui.text(str(s11_mags[index]))
+        imgui.next_column()
+        imgui.text(str(s22_mags[index]))
+        imgui.next_column()
+    imgui.end_child()
+    imgui.columns(1)
 
 
 def draw_instruments_windows(instrs, pna_addr, result):
