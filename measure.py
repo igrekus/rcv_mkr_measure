@@ -17,9 +17,6 @@ import numpy as np
 
 from imgui_datascience import *
 
-COLOR_DISABLED = (0.2, 0.2, 0.2)
-
-
 @attrs
 class UiState:
     clicked_quit = attrib(default=False)
