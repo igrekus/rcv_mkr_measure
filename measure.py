@@ -58,7 +58,7 @@ def main():
 
         ui.pna_addr, ui.clicked_connect, ui.clicked_measure, ui.clicked_export = draw_instruments_windows(instrs, pna_addr, result)
 
-        draw_raw_data_window(current_raw_state, result)
+        current_raw_state = draw_raw_data_window(current_raw_state, result)
 
         if plots_ready:
             imgui.begin('Pow plots')
