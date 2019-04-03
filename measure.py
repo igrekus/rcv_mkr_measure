@@ -147,8 +147,6 @@ def main():
 
 
 def draw_raw_data_window(current_raw_state, result):
-    imgui.set_next_window_position(500, 50, imgui.ONCE)
-    imgui.set_next_window_size(500, 500, imgui.ONCE)
     imgui.begin('Raw data', False)
     _, current_raw_state = imgui.combo('States', current_raw_state, list(map(str, result._states)))
     imgui.columns(6, border=False)
