@@ -28,6 +28,8 @@ class MeasurementResult:
 
         self._gamma_input = list()
         self._gamma_output = list()
+        self._phases = list()
+        self._phase_errs = list()
 
         self._low_threshold = 1.21e9
         self._high_threshold = 1.31e9
@@ -53,6 +55,7 @@ class MeasurementResult:
 
     def process(self):
         self._calc_gammas()
+        self._calc_phases()
         self._find_freqs()
         self._calc_limits()
         self._calc_out_params()
@@ -75,6 +78,8 @@ class MeasurementResult:
 
         self._gamma_input.clear()
         self._gamma_output.clear()
+        self._phases.clear()
+        self._phase_errs.clear()
 
         self._low_index = 0
         self._high_index = 0
@@ -96,6 +101,16 @@ class MeasurementResult:
     def _calc_gammas(self):
         self._gamma_input = [calc_vswr(mags) for mags in self._mag_s11s]
         self._gamma_output = [calc_vswr(mags) for mags in self._mag_s22s]
+
+    def _calc_phases(self):
+        zeros = self._phs_s21s[0]
+        for phases in self._phs_s21s[1:]:
+            self._phases.append([p - z if p - z < 0 else p - z - 360 for p, z in zip(phases, zeros)])
+
+        for phases, state in zip(self._phases, self._states[1:]):
+            self._phase_errs.append([p + state for p in phases])
+
+        print(self._phase_errs)
 
     def _find_freqs(self):
         self._low_index = find_freq_index(self._freqs, threshold=self._low_threshold)
