@@ -45,6 +45,14 @@ class MeasurementResult:
         self._s21_MIN = 0.0
         self._avg_Kp = 0.0
 
+        self._swr_in_max = 0
+        self._swr_out_max = 0
+        self._phase_err_max = 0
+        self._phase_err_min = 0
+
+        self._s21_max_in_range = 0
+        self._s21_delta_max = 0
+
         self._ref_pnt_inp = list()
         self._ref_pnt_outp = list()
 
@@ -93,6 +101,14 @@ class MeasurementResult:
         self._s21_MAX = 0.0
         self._s21_MIN = 0.0
         self._avg_Kp = 0.0
+
+        self._swr_in_max = 0
+        self._swr_out_max = 0
+        self._phase_err_max = 0
+        self._phase_err_min = 0
+
+        self._s21_max_in_range = 0
+        self._s21_delta_max = 0
 
         self._ref_pnt_inp.clear()
         self._ref_pnt_outp.clear()
@@ -145,6 +161,16 @@ class MeasurementResult:
     def _calc_out_stats(self):
         self._summ_inp = sum([sum(pts) for pts in self._ref_pnt_inp])
         self._summ_outp = sum([sum(pts) for pts in self._ref_pnt_outp])
+
+        self._swr_in_max = max([max(gm[self._low_index:self._high_index]) for gm in self._gamma_input])
+        self._swr_out_max = max([max(gm[self._low_index:self._high_index]) for gm in self._gamma_output])
+
+        self._phase_err_max = max([max(pe[self._low_index:self._high_index]) for pe in self._phase_errs])
+        self._phase_err_min = min([min(pe[self._low_index:self._high_index]) for pe in self._phase_errs])
+
+        self._s21_max_in_range = max([max(gm[self._low_index:self._high_index]) for gm in self._mag_s21s])
+
+        self._s21_delta_max = max(self._s21_deltas)
 
     def __bool__(self):
         return self.ready
