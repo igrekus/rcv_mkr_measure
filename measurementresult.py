@@ -38,6 +38,7 @@ class MeasurementResult:
 
         self._s21_maxs = list()
         self._s21_mins = list()
+        self._s21_deltas = list()
 
         self._delta_Kp = 0.0
         self._s21_MAX = 0.0
@@ -86,6 +87,7 @@ class MeasurementResult:
 
         self._s21_maxs.clear()
         self._s21_mins.clear()
+        self._s21_deltas.clear()
 
         self._delta_Kp = 0.0
         self._s21_MAX = 0.0
@@ -120,13 +122,15 @@ class MeasurementResult:
         for i, data in enumerate(self._mag_s21s):
             temp = data[self._low_index:self._high_index + 1]
             mx, mn = max(temp), min(temp)
+            s21_delta = mx - mn
             self._s21_maxs.append(mx)
             self._s21_mins.append(mn)
+            self._s21_deltas.append(s21_delta)
 
             print('\nphase=', self._states[i])
             print('s21_max=', mx)
             print('s21_min=', mn)
-            print('delta_s21=', mx - mn)
+            print('delta_s21=', s21_delta)
 
     def _calc_out_params(self):
         self._s21_MAX = max(self._s21_maxs)
