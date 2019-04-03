@@ -77,6 +77,28 @@ def main():
 
             imgui.end()
 
+        if result:
+            imgui.begin('Stats')
+
+            imgui.text(f'delta Kp = {result._delta_Kp:.02f}')
+            imgui.text(f'SWR max in = {result._swr_in_max:.02f}')
+            imgui.text(f'SWR max out = {result._swr_out_max:.02f}')
+            imgui.text(f'phase err = {result._phase_err_min}..{result._phase_err_max}')
+            imgui.text(f'S21 max = {result._s21_MAX:.02f}')
+            imgui.text(f'S21 delta max = {result._s21_delta_max:.02f}')
+
+            imgui.text(f'S21 deltas')
+            imgui.columns(16)
+            for state in result._states:
+                imgui.text(f'{state:.01f}')
+                imgui.next_column()
+            for delta in result._s21_deltas:
+                imgui.text(f'{delta:.02f}')
+                imgui.next_column()
+            imgui.columns(1)
+
+            imgui.end()
+
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
@@ -228,6 +250,15 @@ def draw_main_menu():
         imgui.end_main_menu_bar()
 
     return clicked_quit, selected_quit
+
+
+def draw_plot():
+    draw_list = imgui.get_window_draw_list()
+
+    win_x, win_y = imgui.get_window_position()
+
+    rgba_color = imgui.get_color_u32_rgba(1, 1, 1, 1)
+    draw_list.add_line(win_x + 10, win_y + 10, win_x + 200, win_y + 200, rgba_color)
 
 
 def impl_glfw_init():
