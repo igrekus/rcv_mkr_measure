@@ -38,7 +38,11 @@ def main():
     # font_new = io.fonts.add_font_from_file_ttf("segoeuil.ttf", 20)
     # impl.refresh_font_texture()
 
-    figure: Figure = plot.figure()
+    figure_s21: Figure = plot.figure()
+    figure_swr_in: Figure = plot.figure()
+    figure_swr_out: Figure = plot.figure()
+    figure_phases: Figure = plot.figure()
+    figure_phase_err: Figure = plot.figure()
 
     current_raw_state = 0
 
@@ -56,25 +60,22 @@ def main():
 
         draw_raw_data_window(current_raw_state, result)
 
-        imgui.set_next_window_position(50, 200, imgui.ONCE)
-        imgui.set_next_window_size(500, 500, imgui.ONCE)
-
         if plots_ready:
-            imgui.begin('Plots')
+            imgui.begin('Pow plots')
 
-            imgui_fig.fig(figure, 500, 500, 'S21')
+            imgui_fig.fig(figure_swr_in, 500, 350, 'SWR in')
+            imgui.same_line()
+            imgui_fig.fig(figure_s21, 500, 350, 'S21')
+            imgui_fig.fig(figure_swr_out, 500, 350, 'SWR out')
 
             imgui.end()
 
-        # imgui.end()
+            imgui.begin('Phase plots')
 
-        # imgui.show_metrics_window()
-        # imgui.show_demo_window()
-        # 1st plot - freq x swr_in
-        # 2nd plot - freq x s21_mag
-        # 3rd plot - freq x swr_out
-        # 4th plot - freq x phase
-        # 5th plot - freq x ph_err
+            imgui_fig.fig(figure_phases, 500, 350, 'Phase')
+            imgui_fig.fig(figure_phases, 500, 350, 'Phase err')
+
+            imgui.end()
 
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
@@ -92,9 +93,46 @@ def main():
             result.raw_data = instrs.measurements
             result.process()
 
-            figure.clear()
+            figure_s21.clear()
+            ax = figure_s21.gca()
+            # ax.set_facecolor((1.0, 0.47, 0.42))
+            ax.set_xlabel('F, GHz')
+            ax.set_ylabel('S21')
+            ax.grid(b=True, which='major', color='0.5', linestyle='--')
             for ys in result._mag_s21s:
-                figure.gca().plot(result.freqs, ys)
+                ax.plot(result.freqs, ys)
+
+            figure_swr_in.clear()
+            ax = figure_swr_in.gca()
+            ax.set_xlabel('F, GHz')
+            ax.set_ylabel('SWR in, dB')
+            ax.grid(b=True, which='major', color='0.5', linestyle='--')
+            for ys in result._gamma_input:
+                ax.plot(result.freqs, ys)
+
+            figure_swr_out.clear()
+            ax = figure_swr_out.gca()
+            ax.set_xlabel('F, GHz')
+            ax.set_ylabel('SWR out, dB')
+            ax.grid(b=True, which='major', color='0.5', linestyle='--')
+            for ys in result._gamma_output:
+                ax.plot(result.freqs, ys)
+
+            figure_phases.clear()
+            ax = figure_phases.gca()
+            ax.set_xlabel('F, GHz')
+            ax.set_ylabel('Phase, deg')
+            ax.grid(b=True, which='major', color='0.5', linestyle='--')
+            for ys in result._phases:
+                ax.plot(result.freqs, ys)
+
+            figure_phase_err.clear()
+            ax = figure_phase_err.gca()
+            ax.set_xlabel('F, GHz')
+            ax.set_ylabel('Phase err, deg')
+            ax.grid(b=True, which='major', color='0.5', linestyle='--')
+            for ys in result._phase_errs:
+                ax.plot(result.freqs, ys)
 
             plots_ready = True
 
