@@ -73,7 +73,7 @@ def main():
             imgui.begin('Phase plots')
 
             imgui_fig.fig(figure_phases, 500, 350, 'Phase')
-            imgui_fig.fig(figure_phases, 500, 350, 'Phase err')
+            imgui_fig.fig(figure_phase_err, 500, 350, 'Phase err')
 
             imgui.end()
 
