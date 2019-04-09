@@ -123,10 +123,22 @@ class MeasurementResult:
     def _calc_phases(self):
         zeros = self._phs_s21s[0]
         for phases in self._phs_s21s[1:]:
-            self._phases.append([p - z if p - z < 0 else p - z - 360 for p, z in zip(phases, zeros)])
+            tmp_list = list()
+            for p, z in zip(phases, zeros):
+                d_ph = abs(p - z)
+                test = abs(d_ph - 360)
+                if test < d_ph:
+                    d_ph = test
+                else:
+                    test = abs(d_ph + 360)
+                    if test < d_ph:
+                        d_ph = test
+                tmp_list.append(d_ph)
+            self._phases.append(tmp_list)
+            # self._phases.append([p - z if p - z < 0 else p - z - 360 for p, z in zip(phases, zeros)])
 
         for phases, state in zip(self._phases, self._states[1:]):
-            self._phase_errs.append([p + state for p in phases])
+            self._phase_errs.append([abs(p) - state for p in phases])
 
         print(self._phase_errs)
 
