@@ -63,6 +63,7 @@ class ExcelResultFinal:
             for row, phase_err in enumerate(phase_errs):
                 phase_err_cell.offset(1 + row, col).value = phase_err
 
+        # TODO calculate cell range instead of hard-coded string
         cats = openpyxl.chart.Reference(ws, range_string='Sheet!$W$2:$W$402')
 
         chart_s21 = openpyxl.chart.LineChart()
