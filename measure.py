@@ -116,46 +116,11 @@ def main():
             result.raw_data = instrs.measurements
             result.process()
 
-            figure_s21.clear()
-            ax = figure_s21.gca()
-            # ax.set_facecolor((1.0, 0.47, 0.42))
-            ax.set_xlabel('F, GHz')
-            ax.set_ylabel('S21')
-            ax.grid(b=True, which='major', color='0.5', linestyle='--')
-            for ys in result._mag_s21s:
-                ax.plot(result.freqs, ys)
-
-            figure_swr_in.clear()
-            ax = figure_swr_in.gca()
-            ax.set_xlabel('F, GHz')
-            ax.set_ylabel('SWR in, dB')
-            ax.grid(b=True, which='major', color='0.5', linestyle='--')
-            for ys in result._gamma_input:
-                ax.plot(result.freqs, ys)
-
-            figure_swr_out.clear()
-            ax = figure_swr_out.gca()
-            ax.set_xlabel('F, GHz')
-            ax.set_ylabel('SWR out, dB')
-            ax.grid(b=True, which='major', color='0.5', linestyle='--')
-            for ys in result._gamma_output:
-                ax.plot(result.freqs, ys)
-
-            figure_phases.clear()
-            ax = figure_phases.gca()
-            ax.set_xlabel('F, GHz')
-            ax.set_ylabel('Phase, deg')
-            ax.grid(b=True, which='major', color='0.5', linestyle='--')
-            for ys in result._phases:
-                ax.plot(result.freqs, ys)
-
-            figure_phase_err.clear()
-            ax = figure_phase_err.gca()
-            ax.set_xlabel('F, GHz')
-            ax.set_ylabel('Phase err, deg')
-            ax.grid(b=True, which='major', color='0.5', linestyle='--')
-            for ys in result._phase_errs:
-                ax.plot(result.freqs, ys)
+            plot_data(figure_s21, result.freqs, result._mag_s21s, 'F, GHz', 'S21')
+            plot_data(figure_swr_in, result.freqs, result._gamma_input, 'F, GHz', 'SWR in, dB')
+            plot_data(figure_swr_out, result.freqs, result._gamma_output, 'F, GHz', 'SWR out, dB')
+            plot_data(figure_phases, result.freqs, result._phases, 'F, GHz', 'Phase, deg')
+            plot_data(figure_phase_err, result.freqs, result._phase_errs, 'F, GHz', 'Phase err, deg')
 
             plots_ready = True
 
@@ -168,6 +133,17 @@ def main():
 
     impl.shutdown()
     glfw.terminate()
+
+
+def plot_data(figure, xs, yss, xlabel, ylabel):
+    # ax.set_facecolor((1.0, 0.47, 0.42))
+    figure.clear()
+    ax = figure.gca()
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(b=True, which='major', color='0.5', linestyle='--')
+    for ys in yss:
+        ax.plot(xs, ys)
 
 
 def draw_raw_data_window(current_raw_state, result):
