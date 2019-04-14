@@ -61,6 +61,7 @@ class MeasurementResult:
 
         self.ready = False
         self._raw_data_set = dict()
+        self._data_set = dict()
 
     def process(self):
         self._calc_gammas()
@@ -70,11 +71,13 @@ class MeasurementResult:
         self._calc_out_params()
         self._calc_ref_points()
         self._calc_out_stats()
+        self._data_set = {state: dataset for state, dataset in zip(self._states, zip(self._mag_s21s, self._gamma_input, self._gamma_output, self._phases, self._phase_errs))}
         self.ready = True
 
     def invalidate(self):
         self._clear()
         self._raw_data_set.clear()
+        self._data_set.clear()
         self.ready = False
 
     def _clear(self):
@@ -204,3 +207,6 @@ class MeasurementResult:
     def raw_datasets(self):
         return self._raw_data_set
 
+    @property
+    def datasets(self):
+        return self._data_set

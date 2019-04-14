@@ -46,6 +46,7 @@ def main():
     figure_phase_err: Figure = plot.figure()
 
     current_raw_state = 0
+    current_plot_data_state = 0
 
     plots_ready = False
 
@@ -99,6 +100,8 @@ def main():
             imgui.columns(1)
 
             imgui.end()
+
+            current_plot_data_state = draw_plot_data_window(current_plot_data_state, result)
 
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
@@ -165,12 +168,38 @@ def draw_raw_data_window(current_raw_state, result):
     imgui.next_column()
     imgui.columns(1)
     if result:
-        draw_table(result.freqs, result.raw_datasets[list(result.raw_datasets)[current_raw_state]], 5)
+        draw_raw_table(result.freqs, result.raw_datasets[list(result.raw_datasets)[current_raw_state]], 5)
     imgui.end()
     return current_raw_state
 
 
-def draw_table(freqs, dataset, cols):
+def draw_plot_data_window(current_plot_data_state, result):
+    imgui.begin('Plot data', False)
+    _, current_plot_data_state = imgui.combo('States##1', current_plot_data_state, list(map(str, result._states))[1:])
+    imgui.columns(7, border=False)
+    imgui.separator()
+    imgui.text('#')
+    imgui.next_column()
+    imgui.text('F')
+    imgui.next_column()
+    imgui.text('S21')
+    imgui.next_column()
+    imgui.text('SWR in')
+    imgui.next_column()
+    imgui.text('SWR out')
+    imgui.next_column()
+    imgui.text('Phase')
+    imgui.next_column()
+    imgui.text('Ph err')
+    imgui.next_column()
+    imgui.columns(1)
+    if result:
+        draw_table(result.freqs, result.datasets[list(result.datasets)[current_plot_data_state]], 6)
+    imgui.end()
+    return current_plot_data_state
+
+
+def draw_raw_table(freqs, dataset, cols):
     s21_mags, s21_phs, s11_mags, s22_mags = dataset
     imgui.begin_child('RawScrollRegion', 0.0, 0.0, False)
     imgui.columns(cols + 1, border=False)
@@ -186,6 +215,29 @@ def draw_table(freqs, dataset, cols):
         imgui.text(str(s11_mags[index]))
         imgui.next_column()
         imgui.text(str(s22_mags[index]))
+        imgui.next_column()
+    imgui.end_child()
+    imgui.columns(1)
+
+
+def draw_table(freqs, dataset, cols):
+    s21s, swr_ins, swr_outs, phases, phase_errs = dataset
+    imgui.begin_child('ScrollRegion', 0.0, 0.0, False)
+    imgui.columns(cols + 1, border=False)
+    for index, frq in enumerate(freqs):
+        imgui.text(str(index + 1))
+        imgui.next_column()
+        imgui.text(str(frq))
+        imgui.next_column()
+        imgui.text(str(s21s[index]))
+        imgui.next_column()
+        imgui.text(str(swr_ins[index]))
+        imgui.next_column()
+        imgui.text(str(swr_outs[index]))
+        imgui.next_column()
+        imgui.text(str(phases[index]))
+        imgui.next_column()
+        imgui.text(str(phase_errs[index]))
         imgui.next_column()
     imgui.end_child()
     imgui.columns(1)
