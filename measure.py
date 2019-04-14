@@ -165,7 +165,7 @@ def draw_raw_data_window(current_raw_state, result):
     imgui.next_column()
     imgui.columns(1)
     if result:
-        draw_table(result.freqs, result.datasets[list(result.datasets)[current_raw_state]], 5)
+        draw_table(result.freqs, result.raw_datasets[list(result.raw_datasets)[current_raw_state]], 5)
     imgui.end()
     return current_raw_state
 

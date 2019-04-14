@@ -201,6 +201,6 @@ class MeasurementResult:
         return self._freqs
 
     @property
-    def datasets(self):
+    def raw_datasets(self):
         return self._raw_data_set
 
