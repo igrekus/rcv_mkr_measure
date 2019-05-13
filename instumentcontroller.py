@@ -92,7 +92,8 @@ class InstrumentController:
 
             self._jerome.mkr_set_bit_pattern(state)
 
-            time.sleep(0.1)
+            if not is_mock:
+                time.sleep(0.1)
 
             # TODO extract measurement class
             self._mag_s21s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S21')))
@@ -100,7 +101,8 @@ class InstrumentController:
             self._mag_s11s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S11')))
             self._mag_s22s.append(parse_float_list(self.mkr_read_measurement(chan=1, parameter='CH1_S22')))
 
-            time.sleep(0.1)
+            if not is_mock:
+                time.sleep(0.1)
 
     def _phase_for_state(self, pattern):
         return sum([ph * pt for ph, pt in zip(self.phases, pattern)])
