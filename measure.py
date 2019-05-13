@@ -29,7 +29,8 @@ def main():
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
 
-    pna_addr = 'TCPIP0::192.168.0.102::inst0::INSTR'
+    # pna_addr = 'TCPIP0::192.168.0.102::5025::SOCKET'
+    pna_addr = 'GPIB0::10::INSTR'
 
     ui = UiState()
     instrs = InstrumentController(pna_address=pna_addr)
