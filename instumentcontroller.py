@@ -81,9 +81,12 @@ class InstrumentController:
             return True
 
         self._jerome = Jerome.try_find()
-        self._pna = AgilentE8362B.from_address_string(self._pna_addr)
+        try:
+            self._pna = AgilentE8362B.from_address_string(self._pna_addr)
+        except RuntimeError as ex:
+            print('RUNTIME ERROR:', ex)
         if not self._pna:
-            self._pna = AgilentE8362B.try_find()
+            self._pna, res = AgilentE8362B.try_find()
         return self._jerome and self._pna
 
     def _measure_s_params(self):
