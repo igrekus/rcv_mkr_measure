@@ -1,8 +1,17 @@
 def calc_vswr(input_values: list):
     temp = map(lambda x: x/20, input_values)
     modulated = list(map(lambda x: pow(10, x), temp))
-    output_gamma = map(lambda z: z[0] / z[1] if z[1] != 0 else 0.000001, zip(map(lambda x: 1 + x, modulated), map(lambda x: 1 - x, modulated)))
+    output_gamma = map(lambda z: z[0] / z[1] if z[1] != 0 else 1, zip(map(lambda x: 1 + x, modulated), map(lambda x: 1 - x, modulated)))
     return list(output_gamma)
+
+
+def ref_calc_vswr(in_mags: list):
+    temp = map(lambda x: x/20, in_mags)
+    modulated = list(map(lambda x: pow(10, x), temp))
+    plus = map(lambda x: 1 + x, modulated)
+    minus = map(lambda x: 1 - x, modulated)
+    out = map(lambda x: x[0] / x[1], zip(plus, minus))
+    return list(out)
 
 
 def find_freq_index(freqs: list, threshold):
@@ -120,8 +129,8 @@ class MeasurementResult:
         self._summ_outp = 0
 
     def _calc_gammas(self):
-        self._gamma_input = [calc_vswr(mags) for mags in self._mag_s11s]
-        self._gamma_output = [calc_vswr(mags) for mags in self._mag_s22s]
+        self._gamma_input = [ref_calc_vswr(mags) for mags in self._mag_s11s]
+        self._gamma_output = [ref_calc_vswr(mags) for mags in self._mag_s22s]
 
     def _calc_phases(self):
         zeros = self._phs_s21s[0]
