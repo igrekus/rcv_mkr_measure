@@ -132,151 +132,149 @@ for i = 1:length(index)% i = [1..16]
             receiver_control('bit4', 1);
             phs_state = 22.5 + 45 + 90 + 180;
     end;
-            st_arr(i) = phs_state;
+    st_arr(i) = phs_state;
 
-            %magS21
-            fprintf(pna, 'CALC1:PAR:SEL "CH1_S21"');
-            %fprintf(pna,'DISP:WIND1:TRAC1:Y:SCAL:AUTO');
-            %pause(time_delay);
-            fprintf(pna, 'CALC1:DATA? FDATA');
-            s_data = binblockread(pna, 'float32');
-            mag_s21_arr(i, :) = s_data(:);
-            clear s_data;
+    %magS21
+    fprintf(pna, 'CALC1:PAR:SEL "CH1_S21"');
+    %fprintf(pna,'DISP:WIND1:TRAC1:Y:SCAL:AUTO');
+    %pause(time_delay);
+    fprintf(pna, 'CALC1:DATA? FDATA');
+    s_data = binblockread(pna, 'float32');
+    mag_s21_arr(i, :) = s_data(:);
+    clear s_data;
 
-            %phsS21
-            fprintf(pna, 'CALC2:PAR:SEL "CH2_S21"');
-            %fprintf(pna,'DISP:WIND2:TRAC1:Y:SCAL:AUTO');
-            %pause(time_delay);
-            fprintf(pna, 'CALC2:DATA? FDATA');
-            s_data = binblockread(pna, 'float32');
-            phs_s21_arr(i, :) = s_data(:);
-            clear s_data;
+    %phsS21
+    fprintf(pna, 'CALC2:PAR:SEL "CH2_S21"');
+    %fprintf(pna,'DISP:WIND2:TRAC1:Y:SCAL:AUTO');
+    %pause(time_delay);
+    fprintf(pna, 'CALC2:DATA? FDATA');
+    s_data = binblockread(pna, 'float32');
+    phs_s21_arr(i, :) = s_data(:);
+    clear s_data;
 
-            %magS11
-            fprintf(pna, 'CALC1:PAR:SEL "CH1_S11"');
-            %fprintf(pna,'DISP:WIND1:TRAC2:Y:SCAL:AUTO');
-            %pause(time_delay);
-            fprintf(pna, 'CALC1:DATA? FDATA');
-            s_data = binblockread(pna, 'float32');
-            mag_s11_arr(i, :) = s_data(:);
-            clear s_data;
+    %magS11
+    fprintf(pna, 'CALC1:PAR:SEL "CH1_S11"');
+    %fprintf(pna,'DISP:WIND1:TRAC2:Y:SCAL:AUTO');
+    %pause(time_delay);
+    fprintf(pna, 'CALC1:DATA? FDATA');
+    s_data = binblockread(pna, 'float32');
+    mag_s11_arr(i, :) = s_data(:);
+    clear s_data;
 
-            %magS22
-            fprintf(pna, 'CALC1:PAR:SEL "CH1_S22"');
-            %fprintf(pna,'DISP:WIND1:TRAC3:Y:SCAL:AUTO');
-            %pause(time_delay);
-            fprintf(pna, 'CALC1:DATA? FDATA');
-            s_data = binblockread(pna, 'float32');
-            mag_s22_arr(i, :) = s_data(:);
-            clear s_data;
+    %magS22
+    fprintf(pna, 'CALC1:PAR:SEL "CH1_S22"');
+    %fprintf(pna,'DISP:WIND1:TRAC3:Y:SCAL:AUTO');
+    %pause(time_delay);
+    fprintf(pna, 'CALC1:DATA? FDATA');
+    s_data = binblockread(pna, 'float32');
+    mag_s22_arr(i, :) = s_data(:);
+    clear s_data;
 
-            end;
-            fclose(pna);
-            delete(pna);
-            clear pna;
+end;
 
-            receiver_control('bit5', 1);
-            receiver_control('bit6', 1);
-            receiver_control('bit3', 1);
-            receiver_control('bit4', 1);
+fclose(pna);
+delete(pna);
+clear pna;
 
-            for i = 1:length(index)
-                gamma_inp(i, :) = VSWR_calc(mag_s11_arr(i, :));
-                gamma_outp(i, :) = VSWR_calc(mag_s22_arr(i, :));
-                end;
+receiver_control('bit5', 1);
+receiver_control('bit6', 1);
+receiver_control('bit3', 1);
+receiver_control('bit4', 1);
 
-                if flag_save_on == 1
-                    file_path = strcat(dir, '\', file_name);
-                    init_file(file_path, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr);
-                    end;
+for i = 1:length(index)
+    gamma_inp(i, :) = VSWR_calc(mag_s11_arr(i, :));
+    gamma_outp(i, :) = VSWR_calc(mag_s22_arr(i, :));
+end;
 
-                    df = frq(2) - frq(1); % 749952
+if flag_save_on == 1
+    file_path = strcat(dir, '\', file_name);
+    init_file(file_path, frq, st_arr, gamma_inp, gamma_outp, mag_s21_arr, phs_s21_arr);
+end;
 
-                    for i = num_pts:-1:1% [401:1]
+df = frq(2) - frq(1); % 749952
 
-                        if (frq(i) < (1.32e9 + df)) && (frq(i) > (1.32e9 - df))
-                            ind_up_frq = i; % 281
-                            end;
-                            end;
+for i = num_pts:-1:1% [401:1]        
+    if (frq(i) < (1.32e9 + df)) && (frq(i) > (1.32e9 - df))
+        ind_up_frq = i; % 281
+    end;
+end;
 
-                            for i = 1:1:num_pts
+for i = 1:1:num_pts
+    if (frq(i) < (1.21e9 + df)) && (frq(i) > (1.21e9 - df))
+        ind_dn_frq = i; % 148
+    end;
+end;
 
-                                if (frq(i) < (1.21e9 + df)) && (frq(i) > (1.21e9 - df))
-                                    ind_dn_frq = i; % 148
-                                    end;
-                                    end;
+clc;
 
-                                    clc;
-                                    %максимум для фиксированного состояния
-                                    s21_max = zeros(1, length(index)); % 1 row 16 cols
-                                    s21_min = zeros(1, length(index));
-                                    delta_s21 = zeros(1, length(index));
+%максимум для фиксированного состояния
+s21_max = zeros(1, length(index)); % 1 row 16 cols
+s21_min = zeros(1, length(index));
+delta_s21 = zeros(1, length(index));
 
-                                    for j = 1:length(index)% [1:16]
-                                        temp = mag_s21_arr(j, ind_dn_frq:ind_up_frq); % 1 row 134 cols
-                                        s21_max(j) = max(temp);
-                                        s21_min(j) = min(temp);
-                                        delta_s21(j) = s21_max(j) - s21_min(j);
-                                        fprintf('Фаза ');
-                                        fprintf('%3.1f\n', st_arr(j));
-                                        fprintf('s21_max = ');
-                                        fprintf('%3.1f\n', s21_max(j));
-                                        fprintf('s21_min = ');
-                                        fprintf('%3.1f\n', s21_min(j));
-                                        fprintf('delta_s21 = ');
-                                        fprintf('%3.1f\n', delta_s21(j));
-                                        end;
+for j = 1:length(index)% [1:16]
+    temp = mag_s21_arr(j, ind_dn_frq:ind_up_frq); % 1 row 134 cols
+    s21_max(j) = max(temp);
+    s21_min(j) = min(temp);
+    delta_s21(j) = s21_max(j) - s21_min(j);
+    fprintf('Фаза ');
+    fprintf('%3.1f\n', st_arr(j));
+    fprintf('s21_max = ');
+    fprintf('%3.1f\n', s21_max(j));
+    fprintf('s21_min = ');
+    fprintf('%3.1f\n', s21_min(j));
+    fprintf('delta_s21 = ');
+    fprintf('%3.1f\n', delta_s21(j));
+end;
 
-                                        s21_MAX = max(s21_max); % 31.6497
-                                        s21_MIN = min(s21_min); % 29.9432
-                                        delta_Kp = abs(s21_MAX) - abs(s21_MIN); % 1.7065
-                                        sred_Kp = (s21_MAX + s21_MIN) / 2; % 30.7964
-                                        fprintf('delta_Kp = ');
-                                        fprintf('%3.1f\n', delta_Kp);
-                                        fprintf('Примерное среднее усиление = %4.2f\n', sred_Kp);
-                                        fprintf('Max_S21 = %3.1f\n', s21_MAX);
-                                        fprintf('Min_S21 = %3.1f\n', s21_MIN);
+s21_MAX = max(s21_max); % 31.6497
+s21_MIN = min(s21_min); % 29.9432
+delta_Kp = abs(s21_MAX) - abs(s21_MIN); % 1.7065
+sred_Kp = (s21_MAX + s21_MIN) / 2; % 30.7964
+fprintf('delta_Kp = ');
+fprintf('%3.1f\n', delta_Kp);
+fprintf('Примерное среднее усиление = %4.2f\n', sred_Kp);
+fprintf('Max_S21 = %3.1f\n', s21_MAX);
+fprintf('Min_S21 = %3.1f\n', s21_MIN);
 
-                                        eps = 1e-1; % 0.1
-                                        ref_pnt_inp = zeros(num_ph, (ind_up_frq - ind_dn_frq)); % 16 rows 133 cols
-                                        ref_pnt_outp = zeros(num_ph, (ind_up_frq - ind_dn_frq));
-                                        summ_inp = zeros(1, num_ph); % 1 row 16 cols
-                                        summ_outp = zeros(1, num_ph);
-                                        l = 1;
-                                        k = 1;
+eps = 1e-1; % 0.1
+ref_pnt_inp = zeros(num_ph, (ind_up_frq - ind_dn_frq)); % 16 rows 133 cols
+ref_pnt_outp = zeros(num_ph, (ind_up_frq - ind_dn_frq));
+summ_inp = zeros(1, num_ph); % 1 row 16 cols
+summ_outp = zeros(1, num_ph);
+l = 1;
+k = 1;
 
-                                        for j = 1:num_ph% [1:16]
+for j = 1:num_ph% [1:16]
+    for i = ind_dn_frq:ind_up_frq% [148:281]
+        if gamma_inp(j, i) > (1.5 + eps)
+            ref_pnt_inp(j, l) = 1; % 16 x 468
+            l = l + 1;
+        end;
 
-                                            for i = ind_dn_frq:ind_up_frq% [148:281]
+        if gamma_outp(j, i) > (1.5 + eps)
+            ref_pnt_outp(j, k) = 1;
+            k = k + 1;
+        end;
+    end;
+end;
 
-                                                if gamma_inp(j, i) > (1.5 + eps)
-                                                    ref_pnt_inp(j, l) = 1; % 16 x 468
-                                                    l = l + 1;
-                                                    end;
+for j = 1:num_ph
+    summ_inp(j) = sum(ref_pnt_inp(j, :));
+    summ_outp(j) = sum(ref_pnt_outp(j, :));
+end;
 
-                                                    if gamma_outp(j, i) > (1.5 + eps)
-                                                        ref_pnt_outp(j, k) = 1;
-                                                        k = k + 1;
-                                                        end;
-                                                        end;
-                                                        end;
+if sum(summ_inp) == 0
+    fprintf('КСВ по входу менее 1.5\n');
+else
+    fprintf('!!! КСВ по входу превышает 1.5\n');
+end;
 
-                                                        for j = 1:num_ph
-                                                            summ_inp(j) = sum(ref_pnt_inp(j, :));
-                                                            summ_outp(j) = sum(ref_pnt_outp(j, :));
-                                                            end;
+if sum(summ_outp) == 0
+    fprintf('КСВ по выходу менее 1.5\n');
+else
+    fprintf('!!! КСВ по выходу превышает 1.5\n');
+end;
 
-                                                            if sum(summ_inp) == 0
-                                                                fprintf('КСВ по входу менее 1.5\n');
-                                                            else
-                                                                fprintf('!!! КСВ по входу превышает 1.5\n');
-                                                                end;
-
-                                                                if sum(summ_outp) == 0
-                                                                    fprintf('КСВ по выходу менее 1.5\n');
-                                                                else
-                                                                    fprintf('!!! КСВ по выходу превышает 1.5\n');
-                                                                    end;
-
-                                                                    % clear all;
-                                                                    %EOF
+% clear all;
+%EOF
