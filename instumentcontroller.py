@@ -149,8 +149,8 @@ class InstrumentController:
         self._pna.send('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
         self._pna.send('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
 
-        self._pna.send(f'SENS1:SWE:POIN 201')
-        self._pna.send(f'SENS2:SWE:POIN 201')
+        # self._pna.send(f'SENS1:SWE:POIN 201')
+        # self._pna.send(f'SENS2:SWE:POIN 201')
 
         self._pna.send('DISP:WIND1:TRAC1:FEED "CH1_S21"')
         self._pna.send('DISP:WIND2:TRAC1:FEED "CH2_S21"')
