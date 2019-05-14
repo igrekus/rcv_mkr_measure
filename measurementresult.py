@@ -73,6 +73,12 @@ class MeasurementResult:
         self._data_set = dict()
 
     def process(self):
+        self._freqs = self._freqs[:151]
+        self._mag_s21s = [m[:151] for m in self._mag_s21s]
+        self._phs_s21s = [m[:151] for m in self._phs_s21s]
+        self._mag_s11s = [m[:151] for m in self._mag_s11s]
+        self._mag_s22s = [m[:151] for m in self._mag_s22s]
+
         self._calc_gammas()
         self._calc_phases()
         self._find_freqs()
