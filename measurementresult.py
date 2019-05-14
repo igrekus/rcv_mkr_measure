@@ -149,15 +149,6 @@ class MeasurementResult:
                     tmp_list.append(p - z)
                 else:
                     tmp_list.append(p - z - 360)
-                # d_ph = abs(p - z)
-                # test = abs(d_ph - 360)
-                # if test < d_ph:
-                #     d_ph = test
-                # else:
-                #     test = abs(d_ph + 360)
-                #     if test < d_ph:
-                #         d_ph = test
-                # tmp_list.append(d_ph)
             self._phases.append(tmp_list)
 
         for phases, state in zip(self._phases, self._states[1:]):
