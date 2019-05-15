@@ -11,7 +11,7 @@ from imgui_datascience import *
 
 from attr import attrs, attrib
 
-from excelresultfinal import ExcelResultFinal
+from excelresult import ExcelResult
 from instumentcontroller import InstrumentController
 from measurementresult import MeasurementResult
 
@@ -128,7 +128,7 @@ def main():
             plots_ready = True
 
         if ui.clicked_export:
-            excel = ExcelResultFinal(result)
+            excel = ExcelResult(result)
             excel.save()
 
         if ui.clicked_quit:
