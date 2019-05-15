@@ -1,4 +1,6 @@
 import datetime
+import subprocess
+
 import openpyxl
 from openpyxl.chart import LineChart
 
@@ -21,7 +23,7 @@ class ExcelResultFinal:
 
         # for row in rows:
         #     ws.append(row)
-        # max_row = len(self._result._freqs) + 1
+        max_row = len(self._result._freqs) + 1
 
         freq_cell = wb_header_cell.offset(0, 22)
         freq_cell.value = 'freq'
@@ -64,13 +66,13 @@ class ExcelResultFinal:
                 phase_err_cell.offset(1 + row, col).value = phase_err
 
         # TODO calculate cell range instead of hard-coded string
-        cats = openpyxl.chart.Reference(ws, range_string='Sheet!$W$2:$W$402')
+        cats = openpyxl.chart.Reference(ws, range_string=f'Sheet!$W$2:$W${max_row}')
 
         chart_s21 = openpyxl.chart.LineChart()
         chart_s21.style = 2
         chart_s21.x_axis.title = 'F, GHz'
         chart_s21.y_axis.title = 'S21'
-        vals = openpyxl.chart.Reference(ws, range_string='Sheet!$X$1:$AM$402')
+        vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$X$1:$AM${max_row}')
         chart_s21.add_data(vals, titles_from_data=True)
         chart_s21.set_categories(cats)
         ws.add_chart(chart_s21, 'B2')
@@ -79,7 +81,7 @@ class ExcelResultFinal:
         chart_swr_in.style = 2
         chart_swr_in.x_axis.title = 'F, GHz'
         chart_swr_in.y_axis.title = 'SWR in, dB'
-        vals = openpyxl.chart.Reference(ws, range_string='Sheet!$AN$1:$BC$402')
+        vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$AN$1:$BC${max_row}')
         chart_swr_in.add_data(vals, titles_from_data=True)
         chart_swr_in.set_categories(cats)
         ws.add_chart(chart_swr_in, 'L2')
@@ -88,7 +90,7 @@ class ExcelResultFinal:
         chart_swr_out.style = 2
         chart_swr_out.x_axis.title = 'F, GHz'
         chart_swr_out.y_axis.title = 'SWR out, dB'
-        vals = openpyxl.chart.Reference(ws, range_string='Sheet!$BD$1:$BS$402')
+        vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$BD$1:$BS${max_row}')
         chart_swr_out.add_data(vals, titles_from_data=True)
         chart_swr_out.set_categories(cats)
         ws.add_chart(chart_swr_out, 'B18')
@@ -97,7 +99,7 @@ class ExcelResultFinal:
         chart_phase.style = 2
         chart_phase.x_axis.title = 'F, GHz'
         chart_phase.y_axis.title = 'Phase, deg'
-        vals = openpyxl.chart.Reference(ws, range_string='Sheet!$BT$1:$CH$402')
+        vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$BT$1:$CH${max_row}')
         chart_phase.add_data(vals, titles_from_data=True)
         chart_phase.set_categories(cats)
         ws.add_chart(chart_phase, 'L18')
@@ -106,24 +108,24 @@ class ExcelResultFinal:
         chart_phase_err.style = 2
         chart_phase_err.x_axis.title = 'F, GHz'
         chart_phase_err.y_axis.title = 'Phase err, deg'
-        vals = openpyxl.chart.Reference(ws, range_string='Sheet!$CI$1:$CW$402')
+        vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$CI$1:$CW${max_row}')
         chart_phase_err.add_data(vals, titles_from_data=True)
         chart_phase_err.set_categories(cats)
         ws.add_chart(chart_phase_err, 'B34')
 
         stats_cell = ws['L34']
         stats_cell.value = f'delta Kp'
-        stats_cell.offset(0, 1).value = f'{self._result._delta_Kp}'
+        stats_cell.offset(0, 1).value = f'{self._result._delta_Kp:.02f}'
         stats_cell.offset(1, 0).value = f'SWR in max'
-        stats_cell.offset(1, 1).value = f'{self._result._swr_in_max}'
+        stats_cell.offset(1, 1).value = f'{self._result._swr_in_max:.01f}'
         stats_cell.offset(2, 0).value = f'SWR out max'
-        stats_cell.offset(2, 1).value = f'{self._result._swr_out_max}'
+        stats_cell.offset(2, 1).value = f'{self._result._swr_out_max:.01f}'
         stats_cell.offset(3, 0).value = f'phase err'
-        stats_cell.offset(3, 1).value = f'{self._result._phase_err_min}..{self._result._phase_err_max}'
+        stats_cell.offset(3, 1).value = f'{self._result._phase_err_min:.01f}..{self._result._phase_err_max:.01f}'
         stats_cell.offset(4, 0).value = f'S21 max'
-        stats_cell.offset(4, 1).value = f'{self._result._s21_max_in_range}'
+        stats_cell.offset(4, 1).value = f'{self._result._s21_max_in_range:.02f}'
         stats_cell.offset(5, 0).value = f'S21 delta max'
-        stats_cell.offset(5, 1).value = f'{self._result._s21_delta_max}'
+        stats_cell.offset(5, 1).value = f'{self._result._s21_delta_max:.02f}'
         stats_cell.offset(6, 0).value = f'S21 deltas'
 
         delas_cell = stats_cell.offset(7, 1)
@@ -135,3 +137,4 @@ class ExcelResultFinal:
         wb.save(self.file_path)
         print('\nsaved .xlsx:', self.file_path)
 
+        subprocess.call('explorer ' + '.\\xlsx\\', shell=True)
