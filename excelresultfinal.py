@@ -69,6 +69,8 @@ class ExcelResultFinal:
         chart_s21 = openpyxl.chart.LineChart()
         chart_s21.style = 2
         chart_s21.x_axis.title = 'F, GHz'
+        chart_s21.x_axis.tickLblPos = 'low'
+        chart_s21.x_axis.tickLblSkip = 25
         chart_s21.y_axis.title = 'S21'
         vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$X$1:$AM${max_row}')
         chart_s21.add_data(vals, titles_from_data=True)
@@ -78,6 +80,8 @@ class ExcelResultFinal:
         chart_swr_in = openpyxl.chart.LineChart()
         chart_swr_in.style = 2
         chart_swr_in.x_axis.title = 'F, GHz'
+        chart_swr_in.x_axis.tickLblPos = 'low'
+        chart_swr_in.x_axis.tickLblSkip = 25
         chart_swr_in.y_axis.title = 'SWR in, dB'
         vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$AN$1:$BC${max_row}')
         chart_swr_in.add_data(vals, titles_from_data=True)
@@ -87,6 +91,8 @@ class ExcelResultFinal:
         chart_swr_out = openpyxl.chart.LineChart()
         chart_swr_out.style = 2
         chart_swr_out.x_axis.title = 'F, GHz'
+        chart_swr_out.x_axis.tickLblPos = 'low'
+        chart_swr_out.x_axis.tickLblSkip = 25
         chart_swr_out.y_axis.title = 'SWR out, dB'
         vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$BD$1:$BS${max_row}')
         chart_swr_out.add_data(vals, titles_from_data=True)
@@ -96,6 +102,8 @@ class ExcelResultFinal:
         chart_phase = openpyxl.chart.LineChart()
         chart_phase.style = 2
         chart_phase.x_axis.title = 'F, GHz'
+        chart_phase.x_axis.tickLblPos = 'low'
+        chart_phase.x_axis.tickLblSkip = 25
         chart_phase.y_axis.title = 'Phase, deg'
         vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$BT$1:$CH${max_row}')
         chart_phase.add_data(vals, titles_from_data=True)
@@ -105,6 +113,8 @@ class ExcelResultFinal:
         chart_phase_err = openpyxl.chart.LineChart()
         chart_phase_err.style = 2
         chart_phase_err.x_axis.title = 'F, GHz'
+        chart_phase_err.x_axis.tickLblPos = 'low'
+        chart_phase_err.x_axis.tickLblSkip = 25
         chart_phase_err.y_axis.title = 'Phase err, deg'
         vals = openpyxl.chart.Reference(ws, range_string=f'Sheet!$CI$1:$CW${max_row}')
         chart_phase_err.add_data(vals, titles_from_data=True)
