@@ -1,5 +1,3 @@
-import sys
-
 from excelresult import ExcelResult
 from instumentcontroller import InstrumentController
 from measurementresult import MeasurementResult

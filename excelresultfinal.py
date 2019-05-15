@@ -21,8 +21,6 @@ class ExcelResultFinal:
 
         wb_header_cell = ws['A1']
 
-        # for row in rows:
-        #     ws.append(row)
         max_row = len(self._result._freqs) + 1
 
         freq_cell = wb_header_cell.offset(0, 22)

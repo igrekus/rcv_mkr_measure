@@ -10,7 +10,6 @@ from imgui.integrations.glfw import GlfwRenderer
 from imgui_datascience import *
 
 from attr import attrs, attrib
-import numpy as np
 
 from excelresultfinal import ExcelResultFinal
 from instumentcontroller import InstrumentController
